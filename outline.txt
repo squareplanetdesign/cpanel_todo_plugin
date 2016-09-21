@@ -1,0 +1,577 @@
+Outline:
+
+Start with an idea.
+Build it leveraging as much cPanel and third-party infrastructure as possible.
+  * these were the same principals we used to develop the cjt2 framework.
+
+What will not be show in detail:
+  * how the backend is implemented. Its in the repo, but is just a prototype.
+
+Survey:
+
+  * Who here has created a plugin for cPanel?
+  * Who here has tried to build their plugin with AngularJS and cjt 2.0?
+
+Focus:
+
+  * Building a modern JavaScript application as part of a cPanel plugin.
+  * Third Party Components:
+      * AngularJS 1.4.x
+      * Boostrap 3 & FontAwsome
+      * requirejs
+      * jquery
+
+  * cPanel Components/Resources
+      * cPanel Style Guide: https://styleguide.cpanel.net
+      * cjt 2.0 - library of reusable JavaScript and Angular components.
+      * UAPI/CGI
+
+What are each of these components?
+
+  * AngularJS - mvvc - https://angularjs.org/
+  * Its an opinionated way to build frontend applications.
+  * You do it the way the developers intended or you will face some problems.
+  * Lots of example code, tutorials and free tools and libraries built on top of angular.
+
+What are each of these components?
+
+  * Bootstrap 3 - http://getbootstrap.com/
+  * A library of design layout components that make writting mobile friendly apps easier
+  * Its complicated once you get past the basics.
+  * To get your apps to look like cPanels, use our style guide that is based on bootstrap.
+      https://styleguide.cpanel.net
+  * Things we use in cpanel from bootstrap:  buttons, wells, alerts, grid, forms, glyph icons.
+  * We also use FontAwsome for additional glyph icons.
+
+What are each of these components?
+
+  * requirejs - http://requirejs.org/
+  * Its a javascript to for loading application dependencies.
+  * You write small single purpose modules
+  * The tool will get them all loaded for you.
+  * requirejs comes with a specialized code optimizer that will help you build optimized resources for you site. (r.js)
+
+What are each of these components?
+
+  * jquery - https://jquery.com/
+  * A very helpful set of DOM minipulators and AJAX tools.
+  * You usually don't need this with angularjs, but its available for some more advanced scenarios.
+
+What are each of these components?
+
+  * cjt 2.0 - Custom JavaScript and Angular components developed by cPanel
+  * Available to us and to you.
+  * Substantial documentation in the JavaScript files.
+  * /usr/local/cpanel/share/libraries/cjt2/src
+  * Some of the build system is published, but missing key components (NodeJS) on production boxes.
+  * We distribute both a production build and debug versions of cjt 2.0 with the product.
+
+What are each of these components?
+
+  * UAPI - cpanels preferred API model for developing applications for cPanel and Webmail
+  * CGI  - unfortuatlly you can't take advantage of Web Host Managers api system, so we have to fall back to CGI for building third party WHM applications.
+
+A note about where to find stuff in cPanel folders.
+
+    /usr/local/cpanel - base directory for all cpanel code.
+    /usr/local/cpanel/Cpanel - perl modules related to the product. Any custom modules you write will be somewhere here. Plus you can use anything in here to build your app.
+    /usr/local/cpanel/base/frontend/paper_lantern - all front end resource will be under this folder for cPanel.
+    /usr/local/cpanel/base/frontend/paper_lantern/libraries - third party libraries and cjt2 live here.
+    /usr/local/cpanel/base/webmail/paper_lantern - all front end resource will be under this folder for Webmail.
+    /usr/local/cpanel/base/webmail/paper_lantern/libraries - third party libraries and cjt2 live here.
+    /usr/local/cpanel/whostmgr/docroot - all front end resource will be under this folder for WHM.
+    /usr/local/cpanel/whostmgr/docroot/templates - all cjt2 frontend app resource will be under this folder for WHM.
+    /usr/local/cpanel/whostmgr/docroot/libraries - third party libraries and cjt2 live here.
+
+Where your plugin should put your files:
+
+  * Plugins are just code (perl/php/python for your backend) + html templates, css, javascript, and images.
+  * Few requirements about where you put your files on disk within the cPanel directories.
+  * Some folders are important:
+
+        /usr/local/cpanel/Cpanel/API - Your modules implementing UAPI calls must go here.
+
+  * Other not so much. Lets put our cPanel application here:
+
+        /usr/local/cpanel/base/frontend/paper_lantern/thirdparty/todo
+
+A quick note about how we organize our apps:
+
+  * Within a cjt 2.0 application folder, we create the following folders:
+
+     todo/directives - angular directives (js)
+     todo/filters - angular filters (js)
+     todo/views  - view partials (html/tt2) and controllers (js)
+     todo/models - sometimes not present if not need.
+     todo/index.html.tt - the main application template
+     todo/index.css     - the css file for the application, provides any custom styling not provided by bootstrap or the paper_lantern style system.
+     todo/index.js      - startup code for you application
+     todo/index.dist.js - production boot-strapper, will attempt to load minified/combined files.
+     todo/index.devel.js - debugging boot-strapper, will load all non-minified JavaScript modules as individual files.
+
+Lets start writing our first angular application for cpanel.
+
+    Start with index.html.tt
+
+    * Its the template for our applications main body.
+    * It uses the master template just like our cPanel applications so it fits right into the product.
+    * Its mostly boiler plate.
+
+    >> Here is an example
+[%
+    SET CPANEL.CPVAR.dprefix = "../";
+
+    WRAPPER '_assets/master.html.tt'
+      app_key = 'plugin_cpanel_todo'     # defines the apps name in the dynamicui.conf
+                                         # for the plugin.
+      include_legacy_stylesheets = 0     # we want only the newest stuff so no
+      include_legacy_scripts = 0         # we want only the newest stuff so no
+      include_cjt = 0                    # we want only the newest stuff so no
+      include_lang = 0                   # we want only the newest stuff so no
+      use_master_bootstrap = 0           # our application will take charge of
+                                         # initializing the master application in
+                                         # addition to our app.
+      page_stylesheets = [
+          'todo/index.css'               # styles for our page
+      ];
+%]
+    <div class="body-content">
+        <div>
+            MADE IT
+        </div>
+        <div ng-controller="applicationController">
+            <div id="viewContent"
+                 class="ng-cloak"
+                 ng-view
+                 ng-cloak></div>
+        </div>
+    </div>
+
+    frontend/paper_lantern/plugins/cpanel/todo/index.html
+
+Next lets get the bootstrappers and main application javascript file in place:
+
+    Create the following:
+
+      todo/index.js
+      todo/index.dist.js
+      todo/index.devel.js
+
+    >> Here is an example of each
+
+    * Running your app in production mode:
+
+    Production:
+    https://<server>:2082/<session>/frontend/paper_lantern/thirdparty/todo/index.html
+
+        * expects the presence of minified and combined files.
+
+    * Running your app in debug mode:
+
+    Development:
+    https://<server>:2082/<session>/frontend/paper_lantern/thirdparty/todo/index.html?debug=1
+
+    * Its slower to load since it loads all modules individually.
+    * Easier for development since you don't have to build each time.
+
+Wiring the bootstrap code into your template
+
+    * PROCESS '_assets/cjt2_include.tmpl';
+
+    >> Lets try it
+
+Next add our first view
+
+    * todo/views/todosView.ptt
+    * todo/views/todosController.js
+
+Wiring your view into the application
+
+    * Add the require line:
+
+       app/views/todoController
+
+    * You can also bring in cjt2 components
+
+       cjt/directive/alertDirective
+       cjt/services/alertService
+
+    app - maps to your applications current directory
+    cjt - maps to the paper_lantern/libraries/cjt2 or paper_lantern/libraries/cjt2-dist folders.
+
+Lets get it listing something:
+[
+    {
+        id: 1,
+        subject: 'wash the car',
+        created: 12345678,
+        updated: 12345678,
+        doned:   null,
+        description: 'remember you have a coupon',
+        status: 1,
+    },
+    {
+        id: 2,
+        subject: 'take out the trash',
+        created: 12345678,
+        updated: 12345678,
+        doned:   null,
+        description: 'do not forget the upstairs bath room again',
+        status: 1,
+    },
+    {
+        id: 3,
+        subject: 'record the starwars marathon on tv',
+        created: 12345633,
+        updated: 12345639,
+        doned:   12345641,
+        description: 'What channel?',
+        status: 2,
+    }
+]
+
+Wiring hard-coded data in the app:
+
+    * Services are for managing data
+    * They are stateless usually.
+
+    >> app/services/todoAPI.js
+
+    return {
+        list: function() {
+            return data;
+        }
+    }
+
+
+Now lets get the view working with the hardcoded data:
+
+    * load app/services/todoAPI into the controller
+    * call the api method
+    * store in $scope so the view can access them.
+
+    $scope.todos = todoAPI.list();
+
+And finally wire in the UI
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-11">
+                Description
+            </div>
+            <div class="col-xs-1">
+                Done
+            </div>
+        </div>
+        <div class="row" ng-repeat"todo in todos">
+            <div class="col-xs-11">
+                {{todo.subject}}
+            </div>
+            <div class="col-xs-1">
+                <input type="checkbox"
+                       ng-model="todo.status"
+                       ng-true-value="2"
+                       ng-false-value="1"
+                       ng-checked="todo.status === 2">
+            </div>
+            <div class="col-xs-12">
+                {{todo.description}}
+            </div>
+        </div>
+    </div>
+
+And run it:
+
+    >> ???
+
+Now wire in the service to the actual backend:
+
+service:
+
+    cjt/api,
+    cjt/api/uapi,
+    cjt/api/uapiRequest,
+
+    // Add a factory that handles the APIs
+    app.factory("todoAPI", [
+        "$q",
+        "APIService",
+        function(
+            $q,
+            APIService
+        ) {
+            // Set up the service's constructor and parent
+            var TodoService = function() {};
+            TodoService.prototype = new APIService();
+
+            // Extend the prototype with any class-specific functionality
+            angular.extend(TodoService.prototype, {
+                list : function() {
+                    var apiCall = new APIREQUEST.Class();
+                    apiCall.initialize("Todo", "list_todos");
+                    return this.deferred(apiCall).promise;
+                }
+            });
+
+            return new TodoService();
+        }
+    ]);
+
+controller:
+
+    todoAPI.list().then(function(resp) {
+        $scope.todos = resp.data;
+    }).catch(function(error) {
+        // Do something with the error
+    });
+
+Run it again.
+
+    >> ???
+
+Add a todo:
+
+    Router:
+
+    $routeProvider.when("/todo/new", {
+        controller: "todosController",
+        templateUrl: CJT.buildFullPath("plugins/cpanel/todo/views/addTodoView.ptt")
+    });
+
+    todosView.ptt
+
+    <button ng-click="open_add_view()">New Item</button>
+
+    Controller:
+
+        $scope.open_add_view = function() {
+            $scope.newTodo = {
+                subject: "",
+                description: ""
+            };
+            $scope.loadView("todo/new");
+        };
+
+        $scope.add = function(todo) {
+            todoAPI.mark(todo.id).then(function(resp) {
+                $scope.todos.push(resp.data);
+            });
+        };
+
+    addTodoView.ptt
+
+        <div>
+            <div>
+                <label>Subject:</label>
+            </div>
+            <div>
+                <input type="text" ng-model="newtodo.subject">
+            </div>
+            <div>
+                <label>Description:</label>
+            </div>
+            <div>
+                <textarea ng-model="newtodo.description" rows="3" cols="50"></textarea>
+            </div>
+            <div>
+                <button ng-click="add(newtodo)">Save</button>
+            </div>
+        </div>
+
+      Service:
+
+    add: function(todo) {
+        var request = new APIREQUEST.Class();
+        request.initialize("Todo", "add_todo");
+        request.addArgument("subject", todo.subject);
+        request.addArgument("description", todo.description);
+        return this.deferred(request).promise;
+    }
+
+Mark a todo as done
+
+    mark: function(todo) {
+        var request = new APIREQUEST.Class();
+        request.initialize("Todo", "mark_todo");
+        request.addArgument("id", todo.id);
+        request.addArgument("status", todo.status);
+        return this.deferred(request).promise;
+    }
+
+controller:
+
+    $scope.mark = function(todo) {
+        todoAPI.mark(todo.id).then(function(resp) {
+            todo.status  = resp.data.status;
+            todo.doned   = resp.data.doned;
+            todo.changed = resp.data.changed;
+        });
+    }
+
+template:
+
+    <input type="checkbox"
+           ng-model="todo.status"
+           ng-true-value="2"
+           ng-false-value="1"
+           ng-checked="todo.status === 2"
+           ng-change="mark(todo)">
+
+Filter todos
+
+    Add the filter controls:
+
+    <div class="col-xs-12 col-sm-6 col-md-5">
+        <input type="text"
+               ng-model="subjectFilter"
+               placeholder="Search">
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-5">
+        <label>
+           <input type="checkbox"
+                ng-model="hideDone"
+                ng-checked="todo.status === 2" >
+           <span>Hide Done</span>
+        </label>
+    </div>
+
+    Add the filter:
+
+    <div class="row" ng-repeat"todo in todos | filter: by_subject_and_status   track by todo.id ">
+
+    var pattern, patternSubject;
+    $scope.by_subject_and_status = function(item) {
+        if (!pattern || patternSubject !== subjectFilter) {
+            pattern = new RegExp(subjectFilter);
+        }
+        if (hideDone) {
+            return pattern.test(item.subject) && item.status != 2;
+        } else {
+            return pattern.test(item.subject);
+        }
+    }
+
+
+Edit a todo.
+
+    Service:
+
+    update: function(todo) {
+        var request = new APIREQUEST.Class();
+        request.initialize("Todo", "update_todo");
+        request.addArgument("id", todo.id);
+        request.addArgument("subject", todo.subject);
+        request.addArgument("description", todo.description);
+        return this.deferred(request).promise;
+    }
+
+    Controller:
+
+    $scope.edit = function(todo) {
+        if (todo.edit) {
+            todoAPI.update(todo).then(function(resp) {
+                todo.doned   = resp.data.doned;
+                todo.changed = resp.data.changed;
+                todo.edit    = false;
+            });
+        } else {
+            todo.edit = true;
+        }
+    };
+
+    View:
+
+    <strong ng-hide="todo.edit">{{todo.subject}}</strong>
+    <input ng-show="todo.edit" ng-model="todo.subject"/>
+
+
+    <strong ng-hide="todo.edit">{{todo.description}}</strong>
+    <input ng-show="todo.edit" ng-model="todo.description"/>
+
+
+    <button ng-click="edit(todo)">
+        <span ng-hide="todo.edit" class="glyphicon glyphicon-pencil"
+              title="Edit"></span>
+        <span ng-hide="todo.edit" class="glyphicon glyphicon-floppy-disk"
+              title="Save"></span>
+    </button>
+
+Delete a todo.
+
+    Service:
+
+    return {
+        remove: function(id) {
+            var request = new uapiRequest(...)
+            request.addArgument("id", id);
+            return promise;
+        }
+    }
+
+
+    Controller:
+
+    $scope.remove = function(todo) {
+        todoAPI.remove(todo.id).then(function(resp) {
+            var index = _.findIndex($scope.todos, function(item) {
+                return todo.id == item.id
+            });
+            if (index !== -1) {
+                $scope.todos.splice(index, 1);
+            }
+        });
+    }
+
+    View:
+
+            <div class="col-xs-12">
+                <span ng-if="!todo.edit">{{todo.description}}</span>
+                <textarea ng-if="todo.edit" ng-model="todo.description" rows="3" cols="50"></textarea>
+                <button ng-click="remove(item)">Delete</button>
+            </div>
+
+Advanced topics:
+
+  Prefetch data:
+
+    * use an api in your main template to fetch your data before the page loads
+
+    SET todos = Uapi.exec('Todo', 'list_todos', {
+        'api.sort_column'    => 'created',
+        'api.normalize'      => 1,
+    });
+
+  Prefetch your view partials
+
+    * embed your view partials in your main template.
+
+  Optimizing your application:
+
+    * grunt/gulp
+    * r.js
+    * node/npm
+
+  Localizing your applications:
+
+    cjt2/utils/locale - LOCALE.maketext()
+    [% locale.maketext() %]
+    bin/build_locale_database
+
+  Error handling with Promises:
+
+    promise.then(function(resp) {
+        // what to do when it didn't fail.
+    }).catch(function(error) {
+        // what to do when it did fail.
+    });
+
+  Alert Service to provide feedback:
+
+    cjt/service/alertService
+    cjt/directives/alertList
+
+  Spinners to show a long running async call is running
+
+    cjt/directives/actionButton
+    cjt/directives/spinner
+
