@@ -1,0 +1,11 @@
+{
+    "whm" : {
+        "enabled" : true
+    },
+    "cpanel" : {
+        "enabled" : true
+    },
+    "webmail" : {
+        "enabled" : true
+    }
+}
