@@ -90,11 +90,13 @@ sub add {
     my $self = shift;
     my (%params) = @_;
     $params{id} = ++$self->{max_id};
-    push @{$self->{list}}, Cpanel::ThirdParty::Todo::Item->new(%params);
+    my $todo = Cpanel::ThirdParty::Todo::Item->new(%params);
+    push @{$self->{list}}, $todo;
     $self->{is_changed} = 1;
     if ($self->{autosave}) {
         $self->save();
     }
+    return $todo;
 }
 
 sub update {
@@ -115,6 +117,7 @@ sub update {
     if ($self->{is_changed} && $self->{autosave}) {
         $self->save();
     }
+    return $matches->[0];
 }
 
 sub remove {
@@ -141,6 +144,8 @@ sub remove {
     if ($self->{is_changed} && $self->{autosave}) {
         $self->save();
     }
+
+    return $removes;
 }
 
 sub list {
@@ -161,6 +166,7 @@ sub mark {
             $self->save();
         }
     }
+    return $item;
 }
 
 sub find_by {
