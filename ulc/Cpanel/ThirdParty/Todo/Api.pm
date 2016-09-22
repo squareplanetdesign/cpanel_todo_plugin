@@ -211,6 +211,26 @@ sub load {
         return;
     }
 
+    my $list = $self->_load_list();
+    for (my $i = 0, $l = @$list; $i < $l; $i++) {
+        my $item = $list->[$i];
+
+        if ($item->{id} > $self->{max_id}) {
+            $self->{max_id} = $item->{id};
+        }
+
+        $list->[$i] = Cpanel::ThirdParty::Todo::Item::make_from_hash($item);
+    }
+
+    $self->{is_changed} = 0;
+    $self->{is_loaded}  = 1;
+
+    $self->{list} = $list;
+}
+
+sub _load_list {
+    my $self = shift;
+
     my $json = eval { File::Slurp::read_file($self->{file})};
     if ($exception = $@) {
         $self->{exception} = $exception;
@@ -224,22 +244,9 @@ sub load {
             $self->{exception} = $exception;
             return 0;
         };
-
-        for (my $i = 0, $l = @$list; $i < $l; $i++) {
-            my $item = $list->[$i];
-
-            if ($item->{id} > $self->{max_id}) {
-                $self->{max_id} = $item->{id};
-            }
-
-            $list->[$i] = Cpanel::ThirdParty::Todo::Item::make_from_hash($item);
-        }
     }
 
-    $self->{is_changed} = 0;
-    $self->{is_loaded}  = 1;
-
-    $self->{list} = $list;
+    return $list;
 }
 
 sub save {
