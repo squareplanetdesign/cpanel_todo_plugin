@@ -204,6 +204,8 @@ sub find_by {
 sub load {
     my $self = shift;
 
+    $self->{exception} = undef;
+
     if (!-e $self->{file}) {
         $self->{is_loaded}  = 1;
         return;
@@ -242,6 +244,7 @@ sub load {
 
 sub save {
     my $self = shift;
+    $self->{exception} = undef;
 
     my $json = eval {
         JSON->new->pretty->allow_blessed->convert_blessed->encode($self->{list});
