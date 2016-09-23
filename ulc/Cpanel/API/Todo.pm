@@ -6,7 +6,7 @@ use Cpanel::ThirdParty::Todo::Config ();
 
 sub add_todo {
     my ( $args, $result ) = @_;
-    my ( $subject, $description, $status ) = $args->get( qw(subject description status) );
+    my ( $subject, $description ) = $args->get( qw(subject description) );
 
     my $config = Cpanel::ThirdParty::Todo::Config->new();
     if ( !$config->param("$Cpanel::appname.enabled") ) {
@@ -32,8 +32,8 @@ sub add_todo {
     );
     $todo->save();
 
-    if ($todo->{$exception}) {
-        $result->error('Failed to add todo with the following error: [_1].', $todo->{$exception});
+    if ($todo->{exception}) {
+        $result->error('Failed to add todo with the following error: [_1].', $todo->{exception});
         return 0;
     }
     elsif (!$todo) {
@@ -77,8 +77,8 @@ sub update_todo {
     );
     $todo->save();
 
-    if ($todo->{$exception}) {
-        $result->error('Failed to update todo with the following error: [_1].', $todo->{$exception});
+    if ($todo->{exception}) {
+        $result->error('Failed to update todo with the following error: [_1].', $todo->{exception});
         return 0;
     }
     elsif (!$todo) {
@@ -119,8 +119,8 @@ sub remove_todo {
     );
     $todo->save();
 
-    if ($todo->{$exception}) {
-        $result->error('Failed to remove todo with the following error: [_1].', $todo->{$exception});
+    if ($todo->{exception}) {
+        $result->error('Failed to remove todo with the following error: [_1].', $todo->{exception});
         return 0;
     }
     elsif (!$todo) {
@@ -145,8 +145,8 @@ sub list_todos {
     my $todo = Cpanel::ThirdParty::Todo::Api->new();
     my $items = $todo->list();
 
-    if ($todo->{$exception}) {
-        $result->error('Failed to list the todos with the following error: [_1].', $todo->{$exception});
+    if ($todo->{exception}) {
+        $result->error('Failed to list the todos with the following error: [_1].', $todo->{exception});
         return 0;
     }
     elsif (!$todo) {
@@ -187,8 +187,8 @@ sub mark_todo {
             status => $status,
         );
 
-    if ($todo->{$exception}) {
-        $result->error('Failed to modify the todo status with the following error: [_1].', $todo->{$exception});
+    if ($todo->{exception}) {
+        $result->error('Failed to modify the todo status with the following error: [_1].', $todo->{exception});
         return 0;
     }
     elsif (!$todo) {
