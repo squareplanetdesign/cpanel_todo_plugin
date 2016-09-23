@@ -10,3 +10,19 @@ sub new {
 
     return  $self;
 }
+
+sub error {
+    my $self = shift;
+    $self->{error} = \@_;
+    return $self->{error};
+}
+
+sub data {
+    my $self = shift;
+    $self->{data} = $_[0] if $_[0];
+    return $self->{data};
+}
+
+1;
+
+

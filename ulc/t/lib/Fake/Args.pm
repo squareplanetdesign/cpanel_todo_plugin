@@ -12,8 +12,8 @@ sub new {
 }
 
 sub get {
-    my ($self, $name) = @_;
-    return $self->{$name};
+    my $self = shift;
+    return @{$self}{@_};
 }
 
 sub set {
