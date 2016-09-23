@@ -88,8 +88,9 @@ sub file {
 
 sub add {
     my $self = shift;
-    my (%params) = @_;
+    my %params = @_;
     $params{id} = ++$self->{max_id};
+
     my $todo = Cpanel::ThirdParty::Todo::Item->new(%params);
     push @{$self->{list}}, $todo;
     $self->{is_changed} = 1;
@@ -130,9 +131,12 @@ sub remove {
     my $len_before = @{$self->{list}};
 
     foreach my $remove (@{$removes}) {
-        $self->{list} = [ grep {
-                $_->id() != $remove->id()
-            } @{$self->{list}} ];
+        for(my $i = 0, $l = @{$self->{list}}; $i < $l; $i++) {
+            my $item = $self->{list}[$i];
+            if ($item && ($item->id() == $remove->id())) {
+                splice @{$self->{list}}, $i, 1;
+            }
+        }
     }
 
     my $len_after = @{$self->{list}};
@@ -206,7 +210,7 @@ sub load {
 
     $self->{exception} = undef;
 
-    if (!-e $self->{file}) {
+    if (!$self->_list_exists()) {
         $self->{is_loaded}  = 1;
         return;
     }
@@ -226,6 +230,13 @@ sub load {
     $self->{is_loaded}  = 1;
 
     $self->{list} = $list;
+
+    return 1;
+}
+
+sub _list_exists {
+    my $self = shift;
+    return -e $self->{file};
 }
 
 sub _load_list {
@@ -234,15 +245,15 @@ sub _load_list {
     my $json = eval { File::Slurp::read_file($self->{file})};
     if ($exception = $@) {
         $self->{exception} = $exception;
-        return 0;
+        return [];
     }
 
     my $list = [];
     if ($json) {
-        my $list = eval { JSON::decode_json($json) };
+        $list = eval { JSON::decode_json($json) };
         if( my $exception = $@) {
             $self->{exception} = $exception;
-            return 0;
+            return [];
         };
     }
 
