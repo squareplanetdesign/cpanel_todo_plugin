@@ -1,5 +1,4 @@
 # Cpanel/ThirdParty/ToDo/Api.t
-#
 
 use lib '..';
 
@@ -187,29 +186,33 @@ for my $test (@tests) {
 
         $api = Cpanel::ThirdParty::Todo::Api->new();
 
-        cmp_deeply {%{ $api }}, superhashof({
-                'is_changed' => 0,
-                'is_loaded' => 1,
-                'list'      => subbagof(
-                    superhashof(
-                        {
-                            id          => re(qr{/d*}),
-                            subject     => ignore(),
-                            description => ignore(),
-                            created     => re(qr{/d*}),
-                            updated     => re(qr{/d*}),
-                            doned       => ignore(),
-                            status      => re(qr{[01]}),
-                        }
-                    )
-                ),
-                'max_id'    => 2,
-            }), "Loaded existing list when no file exists.";
+        my $expect = noclass(superhashof({
+            'is_changed' => 0,
+            'is_loaded' => 1,
+            'list'      => [
+                noclass(
+                    superhashof({
+                        id          => re(qr{\d+}),
+                        subject     => ignore(),
+                        description => ignore(),
+                        created     => re(qr{\d+}),
+                        updated     => re(qr{\d+}),
+                        doned       => ignore(),
+                        status      => re(qr{[12]}),
+                    })
+                )
+            ],
+            'max_id'    => 2,
+        }));
+
+        cmp_deeply($api, $expect, "Loaded existing list.")
+            or diag explain $api, $expect;
 
         # Clean up
         unlink $test->{expected_file};
     }, $test;
 }
+exit;
 
 package Cpanel;
 
