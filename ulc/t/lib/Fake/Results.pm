@@ -13,7 +13,7 @@ sub new {
 
 sub error {
     my $self = shift;
-    $self->{error} = \@_;
+    $self->{error} = \@_ if @_;
     return $self->{error};
 }
 

@@ -1,5 +1,7 @@
 package Cpanel::ThirdParty::Todo::Item;
 
+use Carp ();
+
 our %STATUS = (
     todo => 1,
     done => 2,
@@ -169,17 +171,19 @@ sub make_from_hash {
 
 sub _validate_status {
     my ($value, $key) = @_;
-    die "Not a valid status: $value." if (! grep { $value == $_ } values %STATUS);
+    if (! grep { $value == $_ } values %STATUS) {
+        Carp::confess "Not a valid status: $value.";
+    }
 }
 
 sub _validate_integer {
     my ($value, $key) = @_;
-    die "Not a valid number in $key: $value." if ($value !~ m/^[0-9]*$/);
+    Carp::confess "Not a valid number in $key: $value." if ($value !~ m/^[0-9]*$/);
 }
 
 sub _validate_datetime {
     my ($value, $key) = @_;
-    die "Not a valid date in $key: $value." if ($value !~ m/^[0-9]*$/);
+    Carp::confess "Not a valid date in $key: $value." if ($value !~ m/^[0-9]*$/);
 }
 
 sub _validate_string {

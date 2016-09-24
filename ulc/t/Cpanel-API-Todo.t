@@ -4,7 +4,7 @@ use lib '..';
 use lib 't/lib';
 
 # Test modules
-use Test::More tests => 10 + 1;
+use Test::More tests => 14 + 1;
 use Test::NoWarnings;
 use Test::Exception;
 use Test::MockModule;
@@ -157,8 +157,8 @@ subtest "attempt to remove a non-existent todo from an empty list" => sub {
     my $got = Cpanel::API::Todo::remove_todo($args, $results);
     my $expected = undef;
 
-    ok $got, "remove_todo() correctly returned true for the operation";
-    cmp_deeply($results->data(), $expected, "remove_todo() correctly returned a list with 1 item.")
+    ok !$got, "remove_todo() correctly returned false for the operation";
+    cmp_deeply($results->data(), $expected, "remove_todo() correctly returned a list with no changes.")
         or diag "GOT:\n", explain $results, "EXPECTED:\n", explain $expected;
 
     is @{$_list}, 0, "list was not changed";
@@ -174,8 +174,8 @@ subtest "attempt to remove a non-existent todo from a list with items" => sub {
     my $got = Cpanel::API::Todo::remove_todo($args, $results);
     my $expected = undef;
 
-    ok $got, "remove_todo() correctly returned true for the operation";
-    cmp_deeply($results->data(), $expected, "remove_todo() correctly returned a list with 1 item.")
+    ok !$got, "remove_todo() correctly returned false for the operation";
+    cmp_deeply($results->data(), $expected, "remove_todo() correctly returned a list with no changes.")
         or diag "GOT:\n", explain $results, "EXPECTED:\n", explain $expected;
 
     is @{$_list}, 3, "list was not changed";
@@ -204,7 +204,7 @@ subtest "remove an existing todo from the start of the list" => sub {
     ];
 
     ok $got, "remove_todo() correctly returned true for the operation";
-    cmp_deeply($results->data(), $expected, "remove_todo() correctly returned a list with 1 item.")
+    cmp_deeply($results->data(), $expected, "remove_todo() correctly returned a list with 1 item removed.")
         or diag "GOT:\n", explain $results, "EXPECTED:\n", explain $expected;
 
     is @{$_list}, 2, "list was pruned";
@@ -233,7 +233,7 @@ subtest "remove an existing todo from the middle of the list" => sub {
     ];
 
     ok $got, "remove_todo() correctly returned true for the operation";
-    cmp_deeply($results->data(), $expected, "remove_todo() correctly returned a list with 1 item.")
+    cmp_deeply($results->data(), $expected, "remove_todo() correctly returned a list with 1 item removed.")
         or diag "GOT:\n", explain $results, "EXPECTED:\n", explain $expected;
 
     is @{$_list}, 2, "list was pruned";
@@ -262,27 +262,155 @@ subtest "remove an existing todo from the end of the list" => sub {
     ];
 
     ok $got, "remove_todo() correctly returned true for the operation";
-    cmp_deeply($results->data(), $expected, "remove_todo() correctly returned a list with 1 item.")
+    cmp_deeply($results->data(), $expected, "remove_todo() correctly returned a list with 1 item removed.")
         or diag "GOT:\n", explain $results, "EXPECTED:\n", explain $expected;
 
     is @{$_list}, 2, "list was pruned";
 };
 
-# subtest "attempt to update a todo that does not exist" => sub {
-#     ok 1;
-# };
+subtest "attempt to update a todo that does not exist" => sub {
+    init_user();
+    init_item_list(3);
+    my ($args, $results) = setup_api_call({
+        id          => 4,
+        subject     => "subject updated",
+        description => "description updated",
+        status      => 2, # done
+    });
 
-# subtest "update a todo that exists in the list" => sub {
-#     ok 1;
-# };
+    my $expected_start = superbagof(
+        noclass(
+            superhashof({
+                id          => re(qr{\d+}),
+                subject     => re(qr{subject.*}),
+                description => re(qr{description.*}),
+                created     => re(qr{\d+}),
+                updated     => re(qr{\d+}),
+                doned       => ignore(),
+                status      => re(qr{[12]}),
+            })
+        )
+    );
 
-# subtest "attempt to mark a todo that does not exist in the list as done" => sub {
-#     ok 1;
-# };
+    cmp_deeply $_list, $expected_start, "List starts as expected."
+        or diag "GOT:\n", explain $_list, "EXPECTED:\n", explain $expected_start;
 
-# subtest "mark a todo that does exists in the list as done" => sub {
-#     ok 1;
-# };
+    my $got = Cpanel::API::Todo::update_todo($args, $results);
+    my $expected = undef;
+
+    ok !$got, "update_todo() correctly returned false for the operation";
+    like $results->error()->[0], qr{not found}, "Item not found.";
+    ok !$results->data(), "update_todo() correctly returned nothing."
+        or diag "GOT:\n", explain $results, "EXPECTED:\n", explain $expected;
+
+    is @{$_list}, 3, "list has same number of items";
+};
+
+subtest "update a todo that exists in the list" => sub {
+    init_user();
+    init_item_list(3);
+    my ($args, $results) = setup_api_call({
+        id => 3,
+        subject => "subject updated",
+        description => "description updated",
+        status  => 2, # done
+    });
+
+    my $expected_start = noclass(
+        superhashof({
+            id          => 3,
+            subject     => "subject 3",
+            description => "description 3",
+            created     => re(qr{\d+}),
+            updated     => re(qr{\d+}),
+            doned       => ignore(),
+            status      => 2,
+        })
+    );
+
+    cmp_deeply $_list->[2], $expected_start, "List id = 3 starts as expected."
+        or diag "GOT:\n", explain $_list->[2], "EXPECTED:\n", explain $expected_start;;
+
+    my $got = Cpanel::API::Todo::update_todo($args, $results);
+    my $expected = noclass(
+        superhashof({
+            id          => 3,
+            subject     => "subject updated",
+            description => "description updated",
+            created     => re(qr{\d+}),
+            updated     => re(qr{\d+}),
+            doned       => re(qr{\d+}),
+            status      => 2,
+        })
+    );
+
+    ok $got, "update_todo() correctly returned true for the operation";
+    cmp_deeply($results->data(), $expected, "update_todo() correctly returned a list with 1 item.")
+        or diag "GOT:\n", explain $results, "EXPECTED:\n", explain $expected;
+
+    is @{$_list}, 3, "list has same number of items";
+};
+
+subtest "attempt to mark a todo that does not exist in the list as done" => sub {
+    init_user();
+    init_empty_list();
+    my ($args, $results) = setup_api_call({
+        id      => 1,
+        status  => 2, # done
+    });
+
+    my $got = Cpanel::API::Todo::mark_todo($args, $results);
+    ok !$got, "mark_todo() correctly returned false for the operation";
+
+};
+
+subtest "mark a todo that does exists in the list as done" => sub {
+    init_user();
+    init_item_list(1);
+    my ($args, $results) = setup_api_call({
+        id      => 1,
+        status  => 2, # done
+    });
+
+    my $expected = noclass(
+        superhashof({
+            id          => 1,
+            subject     => ignore(),
+            description => ignore(),
+            created     => re(qr{\d+}),
+            updated     => re(qr{\d+}),
+            doned       => re(qr{\d+}),
+            status      => 2,
+        })
+    );
+
+    my $got = Cpanel::API::Todo::mark_todo($args, $results);
+    ok $got, "mark_todo() correctly returned true for the operation";
+    cmp_deeply $results->data(), $expected, "mark_todo() correctly returns the item marked."
+        or diag "GOT:\n", explain $results, "EXPECTED:\n", explain $expected;
+
+    ($args, $results) = setup_api_call({
+        id      => 1,
+        status  => 1, # not done
+    });
+
+    $expected = noclass(
+        superhashof({
+            id          => 1,
+            subject     => ignore(),
+            description => ignore(),
+            created     => re(qr{\d+}),
+            updated     => re(qr{\d+}),
+            doned       => undef,
+            status      => 1,
+        })
+    );
+
+    $got = Cpanel::API::Todo::mark_todo($args, $results);
+    ok $got, "mark_todo() correctly returned true for the operation";
+    cmp_deeply $results->data(), $expected, "mark_todo() correctly returns the item marked."
+        or diag "GOT:\n", explain $results, "EXPECTED:\n", explain $expected;
+};
 
 sub init_user {
     Cpanel::init_cp(

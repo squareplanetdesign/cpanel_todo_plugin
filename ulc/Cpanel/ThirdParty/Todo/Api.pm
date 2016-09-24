@@ -160,17 +160,22 @@ sub list {
 sub mark {
     my $self = shift;
     my ($id, $status) = @_;
-    my $item = $self->find_by(id => $id);
 
-    if ($item) {
-        $item->status($status);
+    # Setup defaults
+    $status = $Cpanel::ThirdParty::Todo::Item::STATUS{done}
+      if !defined $status;
+
+    my $items = $self->find_by(id => $id);
+
+    if ($items && @$items) {
+        $items->[0]->status($status);
         $self->{is_changed} = 1;
 
         if ($self->{autosave}) {
             $self->save();
         }
     }
-    return $item;
+    return $items->[0];
 }
 
 sub find_by {

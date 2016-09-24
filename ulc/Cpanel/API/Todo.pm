@@ -75,7 +75,13 @@ sub update_todo {
         (defined $description ? ( description => $description) : ()),
         (defined $status ?      ( status => $status)           : ()),
     );
-    $todo->save();
+    if ($todo && $item) {
+        $todo->save();
+    }
+    else {
+        $result->error('Item not found.');
+        return 0;
+    }
 
     if ($todo->{exception}) {
         $result->error('Failed to update todo with the following error: [_1].', $todo->{exception});
@@ -117,7 +123,13 @@ sub remove_todo {
     my $item = $todo->remove(
         id => $id,
     );
-    $todo->save();
+    if ($todo && $item) {
+        $todo->save();
+    }
+    else {
+        $result->error('Item not found.');
+        return 0;
+    }
 
     if ($todo->{exception}) {
         $result->error('Failed to remove todo with the following error: [_1].', $todo->{exception});
@@ -182,10 +194,14 @@ sub mark_todo {
     }
 
     my $todo = Cpanel::ThirdParty::Todo::Api->new();
-    my $item = $todo->mark(
-            id     => $id,
-            status => $status,
-        );
+    my $item = $todo->mark( $id, $status );
+    if ($todo && $item) {
+        $todo->save();
+    }
+    else {
+        $result->error('Item not found.');
+        return 0;
+    }
 
     if ($todo->{exception}) {
         $result->error('Failed to modify the todo status with the following error: [_1].', $todo->{exception});
@@ -196,7 +212,7 @@ sub mark_todo {
         return 0;
     }
     else {
-        $result->data($items);
+        $result->data($item);
         return 1;
     }
 }
