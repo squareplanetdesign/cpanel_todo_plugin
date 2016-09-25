@@ -212,6 +212,7 @@ for my $test (@tests) {
         unlink $test->{expected_file};
     }, $test;
 }
+
 exit;
 
 package Cpanel;
