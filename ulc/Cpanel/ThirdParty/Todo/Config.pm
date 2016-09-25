@@ -22,7 +22,7 @@ sub init {
     $self->{is_loaded}       = 0;
     $self->{is_changed}      = 0;
 
-    if (!-e $self->{path}) {
+    if (!$self->_exists()) {
         $self->{config} = $self->_default();
         $self->{is_loaded}  = 1;
         $self->{is_changed} = 1;
@@ -30,6 +30,11 @@ sub init {
     else {
         $self->load();
     }
+}
+
+sub _exists {
+    my $self = shift;
+    return -e $self->{path} ? 1 : 0;
 }
 
 sub config {
@@ -55,17 +60,52 @@ sub _default {
 sub load {
     my $self = shift;
 
-    my $config_json = eval { File::Slurp::read_file($self->{path}, { atomic => 1 }) };
+    my $json = eval { File::Slurp::read_file($self->{path}, { atomic => 1 }) };
     if (my $exception = $@) {
         Carp::croak("Unable to load the config file, $self->{path}, with error: $exception");
     }
 
-    $self->{config} = eval { JSON->new->pretty->decode($config_json) };
+    return $self->load_json($json);
+}
+
+sub load_json {
+    my ($self, $json) = @_;
+
+    die "no configuration passed to load_json" if !$json;
+
+    my $config = eval { JSON->new->pretty->decode($json) };
     if (my $exception = $@) {
-        die "Config if improperly formatted. Issue: $exception";
+        die "Configuration is improperly formatted. Issue: $exception";
     }
+
+    $self->validate($config);
+
+    $self->{config} = $config;
     $self->{is_loaded}  = 1;
     $self->{is_changed} = 0;
+}
+
+sub validate {
+    my ($self, $config) = @_;
+
+    die "no configuration passed to validate" if !$config;
+    die "configuration not a hash" if ref $config ne 'HASH';
+
+    my @unknown;
+    foreach my $key (keys %$config) {
+        die "configuration for $key is not a hash" if ref $config->{$key} ne 'HASH';
+        @unknown = ();
+        foreach my $subkey (keys %{$config->{$key}}) {
+            push @unknown, "$key.$subkey" if grep { $_ ne $subkey } qw( enabled );
+        }
+        die "unrecognized keys in configuration: " . join(',', @unknown) if @unknown;
+
+        foreach my $subkey (keys %{$config->{$key}}) {
+            my $value = $config->{$key}{$subkey};
+            die "$key.$subkey value $value is invalid."
+              unless grep { $value == $_ } (0, 1, JSON::true, JSON::false);
+        }
+    }
 }
 
 sub save {
