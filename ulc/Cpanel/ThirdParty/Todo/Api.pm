@@ -259,7 +259,7 @@ sub _load_list {
         if( my $exception = $@) {
             $self->{exception} = $exception;
             return [];
-        };
+        }
     }
 
     return $list;

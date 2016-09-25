@@ -32,6 +32,11 @@ sub init {
     }
 }
 
+sub config {
+    my $self = shift;
+    return $self->{config};
+}
+
 sub _default {
     my $self = shift;
     return {
@@ -118,5 +123,14 @@ sub is_changed {
     my $self = shift;
     return $self->{is_changed};
 }
+
+# Persistence
+sub TO_JSON {
+    my $self = shift;
+    return {
+        %{ $self->{config} }
+    };
+}
+
 
 1;
