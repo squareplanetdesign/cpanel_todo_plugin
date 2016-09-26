@@ -22,10 +22,26 @@ define(
                     "cjt/views/applicationController",
 
                     // TODO: Add more controllers here
-
+                    "app/views/todosController"
                 ], function() {
 
                     var app = angular.module("App");
+
+                    // routing
+                    app.config(["$routeProvider",
+                        function($routeProvider) {
+
+                            // Setup the routes
+                            $routeProvider.when("/todos/", {
+                                controller: "todosController",
+                                templateUrl: CJT.buildFullPath("plugins/cpanel/todo/views/todosView.ptt")
+                            });
+
+                            $routeProvider.otherwise({
+                                "redirectTo": "/todos/"
+                            });
+                        }
+                    ]);
 
                     /**
                      * Initialize the application
