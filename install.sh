@@ -31,5 +31,6 @@ ln -s /var/cpanel/plugins/cpanel/todo/ulc/Cpanel/API/Todo.pm Todo.pm
 cd /usr/local/cpanel/Cpanel
 mkdir Plugins
 cd Plugins
+mkdir Cpanel
 
-ln -s /var/cpanel/plugins/cpanel/todo/ulc/Cpanel/Plugins Todo
+ln -s /var/cpanel/plugins/cpanel/todo/ulc/Cpanel/Plugins/Cpanel/Todo Todo
