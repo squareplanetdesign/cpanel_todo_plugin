@@ -53,6 +53,6 @@ WRAPPER '_assets/master.html.tt'
         PAGE.todos = []; // TODO: Add prefetch data
     </script>
 
-    [%# PROCESS '_assets/cjt2_header_include.tt' %]
+    [% PROCESS '_assets/cjt2_header_include.tt' %]
 
 [% END #wrapper -%]
