@@ -1,4 +1,4 @@
-# t/Cpanel-ThirdParty-ToDo-Config.t
+# Cpanel-Plugins-Todo-Config.t
 
 use lib '..';
 
@@ -15,17 +15,17 @@ use File::Temp  ();
 use File::Slurp ();
 use JSON        ();
 
-use_ok('Cpanel::ThirdParty::Todo::Config', 'Module loads ok');
+use_ok('Cpanel::Plugins::Todo::Config', 'Module loads ok');
 
 subtest "Test config does not exists, loads defaults" => sub {
 
     my $dir = File::Temp->newdir();
-    $Cpanel::ThirdParty::Todo::Config::FILE_PATH = $dir;
+    $Cpanel::Plugins::Todo::Config::FILE_PATH = $dir;
 
-    my $config = Cpanel::ThirdParty::Todo::Config->new();
+    my $config = Cpanel::Plugins::Todo::Config->new();
     ok $config, 'Configuration object created.';
 
-    my $file_name = "$Cpanel::ThirdParty::Todo::Config::FILE_PATH/$Cpanel::ThirdParty::Todo::Config::FILE_NAME";
+    my $file_name = "$Cpanel::Plugins::Todo::Config::FILE_PATH/$Cpanel::Plugins::Todo::Config::FILE_NAME";
     ok !-e $file_name, "Config file does not exist";
 
     my $expect = build_config();
@@ -58,7 +58,7 @@ subtest "Test config does not exists, loads defaults" => sub {
     $config->save();
 
     # Reload the config
-    $config = Cpanel::ThirdParty::Todo::Config->new();
+    $config = Cpanel::Plugins::Todo::Config->new();
     ok $config, 'Configuration object created.';
 
     is $config->is_loaded(), 1, "Config is loaded";
@@ -70,12 +70,12 @@ subtest "Test config does not exists, loads defaults" => sub {
 subtest "Test config exists" => sub {
 
     my $dir = File::Temp->newdir();
-    $Cpanel::ThirdParty::Todo::Config::FILE_PATH = $dir;
+    $Cpanel::Plugins::Todo::Config::FILE_PATH = $dir;
 
-    my $file_name = "$Cpanel::ThirdParty::Todo::Config::FILE_PATH/$Cpanel::ThirdParty::Todo::Config::FILE_NAME";
+    my $file_name = "$Cpanel::Plugins::Todo::Config::FILE_PATH/$Cpanel::Plugins::Todo::Config::FILE_NAME";
     setup_config($file_name);
 
-    my $config = Cpanel::ThirdParty::Todo::Config->new();
+    my $config = Cpanel::Plugins::Todo::Config->new();
 
     ok $config, 'Configuration object created.';
 
@@ -90,7 +90,7 @@ subtest "Test config exists" => sub {
     $config->save();
 
     # Reload the config
-    $config = Cpanel::ThirdParty::Todo::Config->new();
+    $config = Cpanel::Plugins::Todo::Config->new();
     ok $config, 'Configuration object created.';
 
     is $config->is_loaded(), 1, "Config is loaded";

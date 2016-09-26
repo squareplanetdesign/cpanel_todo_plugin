@@ -1,13 +1,13 @@
-package Cpanel::ThirdParty::CGI::JSON::Config;
+package Cpanel::Plugins::Todo::CGI::JSON::Config;
 
 use strict;
 use warnings;
 
-use parent qw(Cpanel::ThirdParty::CGI::JSON::Base);
+use parent qw(Cpanel::Plugins::CGI::JSON::Base);
 
 use Cpanel                           ();
 use JSON                             ();
-use Cpanel::ThirdParty::Todo::Config ();
+use Cpanel::Plugins::Todo::Config ();
 use Whostmgr::ACLS                   ();
 
 sub new {
@@ -26,7 +26,7 @@ sub init {
 sub config_manager {
     my $self = shift;
     if (!$self->{config}) {
-        $self->{config} = Cpanel::ThirdParty::Todo::Config->new();
+        $self->{config} = Cpanel::Plugins::Todo::Config->new();
     }
     return $self->{config};
 }

@@ -1,4 +1,4 @@
-# t/Cpanel-ThirdParty-ToDo-Item.t
+# Cpanel-Plugins-Todo-Item.t
 
 use lib '..';
 
@@ -12,19 +12,19 @@ use Test::MockTime qw( :all );
 # For mocks
 use DateTime;
 
-use_ok('Cpanel::ThirdParty::Todo::Item', 'Module loads ok');
+use_ok('Cpanel::Plugins::Todo::Item', 'Module loads ok');
 
 subtest "Test item with default data" => sub {
     set_absolute_time(100);
 
     my $now1 = time();
-    my $item = Cpanel::ThirdParty::Todo::Item->new();
+    my $item = Cpanel::Plugins::Todo::Item->new();
     ok $item, 'Able to create a TODO item with default data.';
 
     is $item->id(), 0, "Items id is initialized.";
     is $item->subject(), '', 'Items subject is initialized.';
     is $item->description(), '', 'Items description is initialized.';
-    is $item->status(), $Cpanel::ThirdParty::Todo::Item::STATUS{todo}, 'Items status is initialized.';
+    is $item->status(), $Cpanel::Plugins::Todo::Item::STATUS{todo}, 'Items status is initialized.';
     is $item->status_text(), "TODO", 'Items status text matches expected value.';
     is $item->created(), $now1, 'Items creation date set right';
     is $item->updated(), $now1, 'Items update date set right';
@@ -42,7 +42,7 @@ subtest "Test item with default data" => sub {
 
     set_relative_time(600);
     my $now4 = time();
-    is $item->status($Cpanel::ThirdParty::Todo::Item::STATUS{done}), $Cpanel::ThirdParty::Todo::Item::STATUS{done} , "Items status updated";
+    is $item->status($Cpanel::Plugins::Todo::Item::STATUS{done}), $Cpanel::Plugins::Todo::Item::STATUS{done} , "Items status updated";
     is $item->status_text(), "Done", 'Items status text matches expected value.';
     is $item->updated(), $now4, "Updated date is advanced.";
     is $item->doned(), $now4, "Doned date is set.";
@@ -55,18 +55,18 @@ subtest "Test item with valid initialization data" => sub {
     set_absolute_time(100);
 
     my $now1 = time();
-    my $item = Cpanel::ThirdParty::Todo::Item->new(
+    my $item = Cpanel::Plugins::Todo::Item->new(
         id      => 1,
         subject => 'new subject',
         description => 'new description',
-        status => $Cpanel::ThirdParty::Todo::Item::STATUS{done},
+        status => $Cpanel::Plugins::Todo::Item::STATUS{done},
     );
     ok $item, 'Able to create a TODO item with default data.';
 
     is $item->id(), 1, "Items id is initialized.";
     is $item->subject(), 'new subject', 'Items subject is initialized.';
     is $item->description(), 'new description', 'Items description is initialized.';
-    is $item->status(), $Cpanel::ThirdParty::Todo::Item::STATUS{done}, 'Items status is initialized.';
+    is $item->status(), $Cpanel::Plugins::Todo::Item::STATUS{done}, 'Items status is initialized.';
     is $item->status_text(), "Done", 'Items status text matches expected value.';
     is $item->created(), $now1, 'Items creation date set right';
     is $item->updated(), $now1, 'Items update date set right';
@@ -84,7 +84,7 @@ subtest "Test item with valid initialization data" => sub {
 
     set_relative_time(600);
     my $now4 = time();
-    is $item->status($Cpanel::ThirdParty::Todo::Item::STATUS{todo}), $Cpanel::ThirdParty::Todo::Item::STATUS{todo} , "Items status updated";
+    is $item->status($Cpanel::Plugins::Todo::Item::STATUS{todo}), $Cpanel::Plugins::Todo::Item::STATUS{todo} , "Items status updated";
     is $item->status_text(), "TODO", 'Items status text matches expected value.';
     is $item->updated(), $now4, "Updated date is advanced.";
     is $item->doned(), undef, "Doned date is unset.";
@@ -94,11 +94,11 @@ subtest "Test item with valid initialization data" => sub {
 
 subtest "Test item with all initialization data" => sub {
 
-    my $item = Cpanel::ThirdParty::Todo::Item->new(
+    my $item = Cpanel::Plugins::Todo::Item->new(
         id      => 1,
         subject => 'new subject',
         description => 'new description',
-        status => $Cpanel::ThirdParty::Todo::Item::STATUS{done},
+        status => $Cpanel::Plugins::Todo::Item::STATUS{done},
         created => 101,
         updated => 202,
         doned   => 303,
@@ -109,7 +109,7 @@ subtest "Test item with all initialization data" => sub {
     is $item->id(), 1, "Items id is initialized.";
     is $item->subject(), 'new subject', 'Items subject is initialized.';
     is $item->description(), 'new description', 'Items description is initialized.';
-    is $item->status(), $Cpanel::ThirdParty::Todo::Item::STATUS{done}, 'Items status is initialized.';
+    is $item->status(), $Cpanel::Plugins::Todo::Item::STATUS{done}, 'Items status is initialized.';
     is $item->status_text(), "Done", 'Items status text matches expected value.';
     is $item->created(), 101, 'Items creation date set from raw data';
     is $item->updated(), 202, 'Items update date set from raw data';
@@ -121,10 +121,10 @@ subtest "Test item with valid initialization data" => sub {
     set_absolute_time(100);
 
     my $now1 = time();
-    my $item = Cpanel::ThirdParty::Todo::Item->new(
+    my $item = Cpanel::Plugins::Todo::Item->new(
         subject => 'new subject',
         description => 'new description',
-        status => $Cpanel::ThirdParty::Todo::Item::STATUS{done},
+        status => $Cpanel::Plugins::Todo::Item::STATUS{done},
     );
     ok $item, 'Able to create a TODO item with default data.';
     is_deeply $item->TO_JSON(), {
@@ -134,6 +134,6 @@ subtest "Test item with valid initialization data" => sub {
             updated     => $now1,
             doned       => $now1,
             description => 'new description',
-            status      => $Cpanel::ThirdParty::Todo::Item::STATUS{done},
+            status      => $Cpanel::Plugins::Todo::Item::STATUS{done},
         }, 'Converts to JSON correctly.';
 };

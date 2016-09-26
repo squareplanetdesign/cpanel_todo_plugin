@@ -1,4 +1,4 @@
-# Cpanel/ThirdParty/ToDo/Api.t
+# Cpanel-Plugins-Todo-Api.t
 
 use lib '..';
 
@@ -18,7 +18,7 @@ use JSON        ();
 # Locally defined below
 $INC{"Cpanel.pm"} = 1;
 
-use_ok('Cpanel::ThirdParty::Todo::Api', 'Module loads ok');
+use_ok('Cpanel::Plugins::Todo::Api', 'Module loads ok');
 
 my $dir = File::Temp->newdir();
 mkdir "$dir/root";
@@ -107,7 +107,7 @@ for my $test (@tests) {
     subtest "Test api methods for $test->{comment}." => sub {
         my ($args) = @_;
 
-        my $mock = Test::MockModule->new('Cpanel::ThirdParty::Todo::Api');
+        my $mock = Test::MockModule->new('Cpanel::Plugins::Todo::Api');
         $mock->mock('_get_user', sub {
             return ( $args->{real_user}, undef, undef, undef, undef, undef, undef, $args->{dir} ) });
         Cpanel::init_cp(
@@ -117,7 +117,7 @@ for my $test (@tests) {
             isreseller => $args->{isreseller},
         );
 
-        my $api = Cpanel::ThirdParty::Todo::Api->new();
+        my $api = Cpanel::Plugins::Todo::Api->new();
 
         cmp_deeply {%{ $api }}, superhashof({
                 'is_changed' => 0,
@@ -132,10 +132,10 @@ for my $test (@tests) {
                 'is_changed' => 1,
                 'is_loaded'  => 1,
                 'max_id'     => 1,
-                'list'       => array_each(isa('Cpanel::ThirdParty::Todo::Item')),
+                'list'       => array_each(isa('Cpanel::Plugins::Todo::Item')),
             }), "Loaded empty list when no file exists.";
 
-        cmp_deeply $api->list(), array_each(isa('Cpanel::ThirdParty::Todo::Item')), "list() api returns list";
+        cmp_deeply $api->list(), array_each(isa('Cpanel::Plugins::Todo::Item')), "list() api returns list";
         cmp_deeply scalar @{$api->list()}, 1, "list() api returns list";
 
         $api->add(
@@ -147,10 +147,10 @@ for my $test (@tests) {
                 'is_changed' => 1,
                 'is_loaded'  => 1,
                 'max_id'     => 2,
-                'list'       => array_each(isa('Cpanel::ThirdParty::Todo::Item')),
+                'list'       => array_each(isa('Cpanel::Plugins::Todo::Item')),
             }), "Loaded empty list when no file exists.";
 
-        cmp_deeply $api->list(), array_each(isa('Cpanel::ThirdParty::Todo::Item')), "list() api returns list";
+        cmp_deeply $api->list(), array_each(isa('Cpanel::Plugins::Todo::Item')), "list() api returns list";
         cmp_deeply scalar @{$api->list()}, 2, "list() api returns list";
         cmp_deeply {%{$api->list()->[0]}}, superhashof({
                 subject => 'something new 1'
@@ -164,14 +164,14 @@ for my $test (@tests) {
 
         $api->update(id => 1, subject => "something new!!!");
 
-        cmp_deeply $api->list(), array_each(isa('Cpanel::ThirdParty::Todo::Item')), "list() api returns list";
+        cmp_deeply $api->list(), array_each(isa('Cpanel::Plugins::Todo::Item')), "list() api returns list";
         cmp_deeply scalar @{$api->list()}, 2, "list() api returns list";
         cmp_deeply {%{$api->list()->[0]}}, superhashof({
                 subject => 'something new!!!'
             }), "First items subject is updated correctly";
 
         $api->remove( id => 1);
-        cmp_deeply $api->list(), array_each(isa('Cpanel::ThirdParty::Todo::Item')), "list() api returns list";
+        cmp_deeply $api->list(), array_each(isa('Cpanel::Plugins::Todo::Item')), "list() api returns list";
         cmp_deeply scalar @{$api->list()}, 1, "list() api returns list with item successfully removed.";
         cmp_deeply {%{$api->list()->[0]}}, superhashof({
                 subject => 'something new 2',
@@ -184,7 +184,7 @@ for my $test (@tests) {
 
         $api = undef;
 
-        $api = Cpanel::ThirdParty::Todo::Api->new();
+        $api = Cpanel::Plugins::Todo::Api->new();
 
         my $expect = noclass(superhashof({
             'is_changed' => 0,

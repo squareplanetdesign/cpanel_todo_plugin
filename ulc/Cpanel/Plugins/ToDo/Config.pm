@@ -1,4 +1,4 @@
-package Cpanel::ThirdParty::Todo::Config;
+package Cpanel::Plugins::Todo::Config;
 
 use Carp        ();
 use File::Slurp ();

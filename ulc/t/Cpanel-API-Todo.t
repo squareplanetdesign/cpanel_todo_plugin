@@ -28,9 +28,9 @@ use Fake::Args    ();
 use Fake::Results ();
 
 # Application modules
-use Cpanel::ThirdParty::Todo::Api    ();
-use Cpanel::ThirdParty::Todo::Config ();
-use Cpanel::ThirdParty::Todo::Item   ();
+use Cpanel::Plugins::Todo::Api    ();
+use Cpanel::Plugins::Todo::Config ();
+use Cpanel::Plugins::Todo::Item   ();
 
 
 use_ok('Cpanel::API::Todo', 'Module loads ok');
@@ -41,7 +41,7 @@ sub hasfeature {
 }
 
 my $_enabled = 1;
-my $mock_config = Test::MockModule->new('Cpanel::ThirdParty::Todo::Config');
+my $mock_config = Test::MockModule->new('Cpanel::Plugins::Todo::Config');
 $mock_config->mock('load' => sub {
     return {
         cpanel => {
@@ -51,7 +51,7 @@ $mock_config->mock('load' => sub {
 });
 
 my $_list = [];
-my $mock_api = Test::MockModule->new('Cpanel::ThirdParty::Todo::Api');
+my $mock_api = Test::MockModule->new('Cpanel::Plugins::Todo::Api');
 $mock_api->mock(
     '_list_exists' => sub {
         return 1;
@@ -458,7 +458,7 @@ sub init_item_list {
 
 sub make_item {
     my ($id, $now, $updated, $doned, $done) = @_;
-    return Cpanel::ThirdParty::Todo::Item->new(
+    return Cpanel::Plugins::Todo::Item->new(
         id => $id,
         subject => "subject $id",
         description => "description $id",

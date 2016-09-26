@@ -1,7 +1,7 @@
-package Cpanel::ThirdParty::Todo::Api;
+package Cpanel::Plugins::Todo::Api;
 
 use Cpanel                         ();
-use Cpanel::ThirdParty::Todo::Item ();
+use Cpanel::Plugins::Todo::Item ();
 use File::Slurp                    ();
 use File::Path                     ();
 use Try::Tiny                      ();
@@ -91,7 +91,7 @@ sub add {
     my %params = @_;
     $params{id} = ++$self->{max_id};
 
-    my $todo = Cpanel::ThirdParty::Todo::Item->new(%params);
+    my $todo = Cpanel::Plugins::Todo::Item->new(%params);
     push @{$self->{list}}, $todo;
     $self->{is_changed} = 1;
     if ($self->{autosave}) {
@@ -162,7 +162,7 @@ sub mark {
     my ($id, $status) = @_;
 
     # Setup defaults
-    $status = $Cpanel::ThirdParty::Todo::Item::STATUS{done}
+    $status = $Cpanel::Plugins::Todo::Item::STATUS{done}
       if !defined $status;
 
     my $items = $self->find_by(id => $id);
@@ -228,7 +228,7 @@ sub load {
             $self->{max_id} = $item->{id};
         }
 
-        $list->[$i] = Cpanel::ThirdParty::Todo::Item::make_from_hash($item);
+        $list->[$i] = Cpanel::Plugins::Todo::Item::make_from_hash($item);
     }
 
     $self->{is_changed} = 0;

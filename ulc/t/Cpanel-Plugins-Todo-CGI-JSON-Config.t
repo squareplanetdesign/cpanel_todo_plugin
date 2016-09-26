@@ -1,4 +1,4 @@
-# Cpanel/ThirdParty/ToDo/Api.t
+# Cpanel-Plugins-Todo-CGI-JSON-Config.t
 
 use lib '..';
 
@@ -11,20 +11,20 @@ use Test::Deep;
 use Test::MockTime qw( :all );
 
 # Other modules
-use Cpanel::ThirdParty::Todo::Config ();
+use Cpanel::Plugins::Todo::Config ();
 
 # Locally defined below
 $INC{"Cpanel.pm"} = 1;
 $INC{"Whostmgr/ACLS.pm"} = 1;
 
-use_ok('Cpanel::ThirdParty::CGI::JSON::Config', 'Module loads ok');
+use_ok('Cpanel::Plugins::Todo::CGI::JSON::Config', 'Module loads ok');
 
 subtest "When attempting to run the cgi as non-root, user should get an unauthorized error." => sub {
 
     Cpanel::init_cp( appname => 'whostmgr', user => 'reseller', isreseller => 1 );
     Whostmgr::ACLS::init_acls( root => 0 );
 
-    my $cgi = Cpanel::ThirdParty::CGI::JSON::Config->new();
+    my $cgi = Cpanel::Plugins::Todo::CGI::JSON::Config->new();
     my $got = $cgi->run();
 
     like $got, qr/401 Unauthorized/, "Got unauthorized as expected";
@@ -36,10 +36,10 @@ subtest "When loading the configuration fails, user should get a server error." 
     Cpanel::init_cp( appname => 'whostmgr', user => 'root' );
     Whostmgr::ACLS::init_acls( root => 1 );
 
-    my $mock = Test::MockModule->new('Cpanel::ThirdParty::Todo::Config');
+    my $mock = Test::MockModule->new('Cpanel::Plugins::Todo::Config');
     $mock->mock(new => sub { die "load failed" });
 
-    my $cgi = Cpanel::ThirdParty::CGI::JSON::Config->new();
+    my $cgi = Cpanel::Plugins::Todo::CGI::JSON::Config->new();
     my $got = $cgi->run();
 
     like $got, qr/500 Server error/, "Got server error as expected";
@@ -53,10 +53,10 @@ subtest "When loading the configuration fails w/o exception, user should get a s
     Cpanel::init_cp( appname => 'whostmgr', user => 'root' );
     Whostmgr::ACLS::init_acls( root => 1 );
 
-    my $mock = Test::MockModule->new('Cpanel::ThirdParty::Todo::Config');
+    my $mock = Test::MockModule->new('Cpanel::Plugins::Todo::Config');
     $mock->mock(new => sub { return; });
 
-    my $cgi = Cpanel::ThirdParty::CGI::JSON::Config->new();
+    my $cgi = Cpanel::Plugins::Todo::CGI::JSON::Config->new();
     my $got = $cgi->run();
 
     like $got, qr/500 Server error/, "Got server error as expected";
@@ -73,7 +73,7 @@ subtest "When running the cgi with an unsupported, user should get a server erro
     foreach my $method ( qw/PUT DELETE HEAD/) {
         local $ENV{ 'REQUEST_METHOD' } = $method;
 
-        my $cgi = Cpanel::ThirdParty::CGI::JSON::Config->new();
+        my $cgi = Cpanel::Plugins::Todo::CGI::JSON::Config->new();
         my $got = $cgi->run();
 
         like $got, qr/405 Method Not Allowed/, "Got method not allowed as expected";
@@ -89,7 +89,7 @@ subtest "When a user requests the configuration they get the current configurati
 
     my $expected_json = generate_config(1);
 
-    my $mock = Test::MockModule->new('Cpanel::ThirdParty::Todo::Config');
+    my $mock = Test::MockModule->new('Cpanel::Plugins::Todo::Config');
     $mock->mock(
         _exists => sub {
             return 1;
@@ -102,7 +102,7 @@ subtest "When a user requests the configuration they get the current configurati
 
     local $ENV{ 'REQUEST_METHOD' } = "GET";
 
-    my $cgi = Cpanel::ThirdParty::CGI::JSON::Config->new();
+    my $cgi = Cpanel::Plugins::Todo::CGI::JSON::Config->new();
     my $got = $cgi->run();
 
     like $got, qr/200 OK/, "Got configuration as expected.";
@@ -118,7 +118,7 @@ subtest "When a user requests to change the configuration, it works." => sub {
 
     my $expected_json = generate_config(1);
 
-    my $mock = Test::MockModule->new('Cpanel::ThirdParty::Todo::Config');
+    my $mock = Test::MockModule->new('Cpanel::Plugins::Todo::Config');
     $mock->mock(
         _exists => sub {
             return 1;
@@ -130,7 +130,7 @@ subtest "When a user requests to change the configuration, it works." => sub {
     );
 
     local $ENV{ 'REQUEST_METHOD' } = "GET";
-    my $cgi = Cpanel::ThirdParty::CGI::JSON::Config->new();
+    my $cgi = Cpanel::Plugins::Todo::CGI::JSON::Config->new();
     my $got = $cgi->run();
 
     like $got, qr/200 OK/, "Got configuration as expected.";
@@ -145,7 +145,7 @@ subtest "When a user requests to change the configuration, it works." => sub {
     my $enc_config = "JSON=" . URL::Encode::url_encode($new_config);
     open( $stdin, '<', \$enc_config) || die;
 
-    $cgi = Cpanel::ThirdParty::CGI::JSON::Config->new($stdin);
+    $cgi = Cpanel::Plugins::Todo::CGI::JSON::Config->new($stdin);
     $got = $cgi->run();
 
     like $got, qr/200 OK/, "Got configuration as expected.";
