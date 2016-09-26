@@ -1,14 +1,14 @@
 package Cpanel::API::Todo;
 
 use Cpanel                           ();
-use Cpanel::Plugins::Todo::Api    ();
-use Cpanel::Plugins::Todo::Config ();
+use Cpanel::Plugins::Cpanel::Todo::Api    ();
+use Cpanel::Plugins::Cpanel::Todo::Config ();
 
 sub add_todo {
     my ( $args, $result ) = @_;
     my ( $subject, $description ) = $args->get( qw(subject description) );
 
-    my $config = Cpanel::Plugins::Todo::Config->new();
+    my $config = Cpanel::Plugins::Cpanel::Todo::Config->new();
     if ( !$config->param("$Cpanel::appname.enabled") ) {
         $result->error( 'Todo application is not enabled for [_1].', $Cpanel::appname );
         return;
@@ -25,7 +25,7 @@ sub add_todo {
         return;
     }
 
-    my $todo = Cpanel::Plugins::Todo::Api->new();
+    my $todo = Cpanel::Plugins::Cpanel::Todo::Api->new();
     my $item = $todo->add(
         subject     => $subject,
         description => $description,
@@ -50,7 +50,7 @@ sub update_todo {
     my ( $args, $result ) = @_;
     my ( $id, $subject, $description, $status ) = $args->get( qw(id subject description status) );
 
-    my $config = Cpanel::Plugins::Todo::Config->new();
+    my $config = Cpanel::Plugins::Cpanel::Todo::Config->new();
     if ( !$config->param("$Cpanel::appname.enabled") ) {
         $result->error( 'Todo application is not enabled for [_1].', $Cpanel::appname );
         return;
@@ -68,7 +68,7 @@ sub update_todo {
         return;
     }
 
-    my $todo = Cpanel::Plugins::Todo::Api->new();
+    my $todo = Cpanel::Plugins::Cpanel::Todo::Api->new();
     my $item = $todo->update(
         id => $id,
         (defined $subject ?     ( subject => $subject)         : ()),
@@ -101,7 +101,7 @@ sub remove_todo {
     my ( $args, $result ) = @_;
     my ( $id ) = $args->get( qw(id) );
 
-    my $config = Cpanel::Plugins::Todo::Config->new();
+    my $config = Cpanel::Plugins::Cpanel::Todo::Config->new();
     if ( !$config->param("$Cpanel::appname.enabled") ) {
         $result->error( 'Todo application is not enabled for [_1].', $Cpanel::appname );
         return;
@@ -119,7 +119,7 @@ sub remove_todo {
         return;
     }
 
-    my $todo = Cpanel::Plugins::Todo::Api->new();
+    my $todo = Cpanel::Plugins::Cpanel::Todo::Api->new();
     my $item = $todo->remove(
         id => $id,
     );
@@ -148,13 +148,13 @@ sub remove_todo {
 sub list_todos {
     my ( $args, $result ) = @_;
 
-    my $config = Cpanel::Plugins::Todo::Config->new();
+    my $config = Cpanel::Plugins::Cpanel::Todo::Config->new();
     if ( !$config->param("$Cpanel::appname.enabled") ) {
         $result->error( 'Todo application is not enabled for [_1].', $Cpanel::appname );
         return;
     }
 
-    my $todo = Cpanel::Plugins::Todo::Api->new();
+    my $todo = Cpanel::Plugins::Cpanel::Todo::Api->new();
     my $items = $todo->list();
 
     if ($todo->{exception}) {
@@ -175,7 +175,7 @@ sub mark_todo {
     my ( $args, $result ) = @_;
     my ( $id, $status ) = $args->get( qw(id status) );
 
-    my $config = Cpanel::Plugins::Todo::Config->new();
+    my $config = Cpanel::Plugins::Cpanel::Todo::Config->new();
     if ( !$config->param("$Cpanel::appname.enabled") ) {
         $result->error( 'Todo application is not enabled for [_1].', $Cpanel::appname );
         return;
@@ -193,7 +193,7 @@ sub mark_todo {
         return;
     }
 
-    my $todo = Cpanel::Plugins::Todo::Api->new();
+    my $todo = Cpanel::Plugins::Cpanel::Todo::Api->new();
     my $item = $todo->mark( $id, $status );
     if ($todo && $item) {
         $todo->save();

@@ -1,4 +1,4 @@
-package Cpanel::Plugins::Todo::Item;
+package Cpanel::Plugins::Cpanel::Todo::Item;
 
 use Carp ();
 
@@ -165,7 +165,7 @@ sub TO_JSON {
 
 sub make_from_hash {
     my $params = shift;
-    return Cpanel::Plugins::Todo::Item->new(%$params);
+    return Cpanel::Plugins::Cpanel::Todo::Item->new(%$params);
 }
 
 

@@ -1,4 +1,4 @@
-package Cpanel::Plugins::Todo::CGI::JSON::Base;
+package Cpanel::Plugins::Cpanel::Todo::CGI::JSON::Base;
 
 use strict;
 use warnings;
