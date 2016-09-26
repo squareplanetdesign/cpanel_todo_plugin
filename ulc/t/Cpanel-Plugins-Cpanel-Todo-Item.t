@@ -1,6 +1,6 @@
 # Cpanel-Plugins-Todo-Item.t
 
-use lib '..';
+use lib '.';
 
 # Test modules
 use Test::More tests => 5 + 1;

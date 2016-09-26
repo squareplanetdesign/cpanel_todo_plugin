@@ -1,6 +1,6 @@
 # Cpanel-Plugins-Cpanel-Todo-CGI-JSON-Config.t
 
-use lib '..';
+use lib '.';
 
 # Test modules
 use Test::More tests => 7 + 1;

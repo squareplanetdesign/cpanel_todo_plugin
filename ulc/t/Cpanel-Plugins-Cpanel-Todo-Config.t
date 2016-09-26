@@ -1,6 +1,6 @@
 # Cpanel-Plugins-Cpanel-Todo-Config.t
 
-use lib '..';
+use lib '.';
 
 # Test modules
 use Test::More tests => 3 + 1;
