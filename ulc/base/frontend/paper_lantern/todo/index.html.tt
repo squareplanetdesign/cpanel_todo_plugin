@@ -39,6 +39,7 @@ WRAPPER '_assets/master.html.tt'
 
     <div class="body-content">
         <div ng-controller="applicationController">
+            <cp-alert-list></cp-alert-list>
             <div id="viewContent"
                  class="ng-cloak"
                  ng-view
