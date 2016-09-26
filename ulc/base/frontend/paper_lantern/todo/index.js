@@ -20,8 +20,10 @@ define(
                 [
                     // Application Modules
                     "cjt/views/applicationController",
+                    "cjt/services/alertService",
+                    "cjt/directives/alertList",
 
-                    // TODO: Add more controllers here
+                    // Controllers
                     "app/views/todosController"
                 ], function() {
 
@@ -42,6 +44,25 @@ define(
                             });
                         }
                     ]);
+
+                    // reuse code in cjt 2.0
+                    app.run(["alertService", "$interval", function(alertService, $interval) {
+                        var alerts = [
+                            { type: "danger",  message: "Wait for it.", id: "x1" },
+                            { type: "warn",    message: "Wait for it ..", id: "x2" },
+                            { type: "info",    message: "Wait a little longer ...", id: "x3" },
+                            { type: "success", message: "Some great stuff from cjt 2.0 I don't have to write myself.", id: "x4" }
+                        ];
+
+                        var promise = $interval(function() {
+                            if (alerts.length > 0) {
+                                alertService.add(alerts.shift());
+                            }
+                            else {
+                                $interval.cancel(promise);
+                            }
+                        }, 2400);
+                    }]);
 
                     /**
                      * Initialize the application
