@@ -159,11 +159,20 @@ Next lets get the bootstrappers and main application javascript file in place:
 
     >> Here is an example of each
 
+    * Running your app in production mode:
+
+    Production:
+    https://<server>:2082/<session>/frontend/paper_lantern/thirdparty/todo/index.html
+
+        * expects the presence of minified and combined files.
+
     * Running your app in debug mode:
 
-    https://<server>:2082/<session>/frontend/paper_lantern/thirdparty/todo/index?debug=1
+    Development:
+    https://<server>:2082/<session>/frontend/paper_lantern/thirdparty/todo/index.html?debug=1
 
-    * Its slower, but easier for development stage coding
+    * Its slower to load since it loads all modules individually.
+    * Easier for development since you don't have to build each time.
 
 Wiring the bootstrap code into your template
 
@@ -173,8 +182,8 @@ Wiring the bootstrap code into your template
 
 Next add our first view
 
-    * todo/views/todo.tt
-    * todo/views/todoController.js
+    * todo/views/todosView.ptt
+    * todo/views/todosController.js
 
 Wiring your view into the application
 
