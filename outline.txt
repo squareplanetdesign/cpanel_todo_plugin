@@ -106,8 +106,8 @@ A quick note about how we organize our apps:
      todo/index.html.tt - the main application template
      todo/index.css     - the css file for the application, provides any custom styling not provided by bootstrap or the paper_lantern style system.
      todo/index.js      - startup code for you application
-     todo/index-dist.js - production boot-strapper, will attempt to load minified/combined files.
-     todo/index-debug.js - debugging boot-strapper, will load all non-minified JavaScript modules as individual files.
+     todo/index.dist.js - production boot-strapper, will attempt to load minified/combined files.
+     todo/index.devel.js - debugging boot-strapper, will load all non-minified JavaScript modules as individual files.
 
 Lets start writing our first angular application for cpanel.
 
@@ -118,14 +118,44 @@ Lets start writing our first angular application for cpanel.
     * Its mostly boiler plate.
 
     >> Here is an example
+[%
+    SET CPANEL.CPVAR.dprefix = "../";
+
+    WRAPPER '_assets/master.html.tt'
+      app_key = 'plugin_cpanel_todo'     # defines the apps name in the dynamicui.conf
+                                         # for the plugin.
+      include_legacy_stylesheets = 0     # we want only the newest stuff so no
+      include_legacy_scripts = 0         # we want only the newest stuff so no
+      include_cjt = 0                    # we want only the newest stuff so no
+      include_lang = 0                   # we want only the newest stuff so no
+      use_master_bootstrap = 0           # our application will take charge of
+                                         # initializing the master application in
+                                         # addition to our app.
+      page_stylesheets = [
+          'todo/index.css'               # styles for our page
+      ];
+%]
+    <div class="body-content">
+        <div>
+            MADE IT
+        </div>
+        <div ng-controller="applicationController">
+            <div id="viewContent"
+                 class="ng-cloak"
+                 ng-view
+                 ng-cloak></div>
+        </div>
+    </div>
+
+    frontend/paper_lantern/plugins/cpanel/todo/index.html
 
 Next lets get the bootstrappers and main application javascript file in place:
 
     Create the following:
 
       todo/index.js
-      todo/index-dist.js
-      todo/index-debug.js
+      todo/index.dist.js
+      todo/index.devel.js
 
     >> Here is an example of each
 
@@ -464,6 +494,19 @@ Delete a todo.
             </div>
 
 Advanced topics:
+
+  Prefetch data:
+
+    * use an api in your main template to fetch your data before the page loads
+
+    SET todos = Uapi.exec('Todo', 'list_todos', {
+        'api.sort_column'    => 'created',
+        'api.normalize'      => 1,
+    });
+
+  Prefetch your view partials
+
+    * embed your view partials in your main template.
 
   Optimizing your application:
 
