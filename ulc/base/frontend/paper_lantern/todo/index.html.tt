@@ -12,7 +12,7 @@ USE JSON;
 #          app_3     => "../../../"
 #    app_4           => "../"
 #
-SET CPANEL.CPVAR.dprefix = "../";
+SET CPANEL.CPVAR.dprefix = "../../../";
 
 # If you plugin installs so it participates in feature control.
 #SET has_feature = CPANEL.feature('plugin_cpanel_todo');
@@ -53,6 +53,6 @@ WRAPPER '_assets/master.html.tt'
         PAGE.todos = []; // TODO: Add prefetch data
     </script>
 
-    [%# PROCESS '_assets/cjt2_header_include.tt' %]
+    [% PROCESS '_assets/cjt2_header_include.tt' %]
 
 [% END #wrapper -%]
