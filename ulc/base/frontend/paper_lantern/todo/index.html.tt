@@ -1,0 +1,58 @@
+[%
+USE Uapi;
+USE JSON;
+
+# must be same number of back as you are deep from the theme root.
+# Lets say you in paper_lantern and your applications reside in
+# app_1, app_1/app_2, app_1/app_2/app_3 and app_4.
+#
+#  paper_lantern
+#    app_1           => "../"
+#       app_2        => "../../"
+#          app_3     => "../../../"
+#    app_4           => "../"
+#
+SET CPANEL.CPVAR.dprefix = "../";
+
+# If you plugin installs so it participates in feature control.
+#SET has_feature = CPANEL.feature('plugin_cpanel_todo');
+
+# TODO: Prefetch initial data using UAPI on the server.
+
+# Initialize the master template. There are lots of options that control various
+# aspects of how the master template renders around your application template.
+# See: /usr/local/cpanel/base/frontend/paper_lantern/_assets/master.html.tt
+WRAPPER '_assets/master.html.tt'
+    app_key = 'plugin_cpanel_todo'     # defines the apps name in the dynamicui.conf
+                                       # for the plugin.
+    include_legacy_stylesheets = 0     # we want only the newest stuff so no
+    include_legacy_scripts = 0         # we want only the newest stuff so no
+    include_cjt = 0                    # we want only the newest stuff so no
+    include_lang = 0                   # we want only the newest stuff so no
+    use_master_bootstrap = 0           # our application will take charge of
+                                       # initializing the master application in
+                                       # addition to our app.
+    page_stylesheets = [
+        'todo/index.css'               # styles for our page
+    ]
+-%]
+
+    <div class="body-content">
+        <div>
+            MADE IT
+        </div>
+        <div ng-controller="applicationController">
+            <div id="viewContent"
+                 class="ng-cloak"
+                 ng-view
+                 ng-cloak></div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        PAGE.todos = []; // TODO: Add prefetch data
+    </script>
+
+    [%# PROCESS '_assets/cjt2_header_include.tt' %]
+
+[% END #wrapper -%]
