@@ -38,9 +38,6 @@ WRAPPER '_assets/master.html.tt'
 -%]
 
     <div class="body-content">
-        <div>
-            MADE IT
-        </div>
         <div ng-controller="applicationController">
             <div id="viewContent"
                  class="ng-cloak"
