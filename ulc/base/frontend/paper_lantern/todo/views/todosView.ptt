@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" ng-if="todos.length">
     <div class="row row-titles">
         <div class="col-xs-10 col-sm-11">
             Todo
@@ -24,4 +24,7 @@
             {{todo.description}}
         </div>
     </div>
+</div>
+<div class="well well-info" ng-if="todos.length == 0">
+    You do not have any todos yet. Create one?
 </div>

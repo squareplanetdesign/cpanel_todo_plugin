@@ -1,51 +1,44 @@
 /* global define: false */
 
 define([
-    "angular"
+    "angular",
+    "cjt/io/api",
+    "cjt/io/uapi-request",
+    "cjt/io/uapi", // IMPORTANT: Load the driver so its ready
+
+    // Angular components
+    "cjt/services/APIService"
 ], function(
-    angular
+    angular,
+    API,
+    APIREQUEST
 ) {
 
+    // Fetch the angular application
     var app = angular.module("App");
 
-    var data = [
-            {
-                id: 1,
-                subject: "wash the car",
-                created: 12345678,
-                updated: 12345678,
-                doned:   null,
-                description: "remember you have a coupon",
-                status: 1,
-            },
-            {
-                id: 2,
-                subject: "take out the trash",
-                created: 12345678,
-                updated: 12345678,
-                doned:   null,
-                description: "do not forget the upstairs bath room again",
-                status: 1,
-            },
-            {
-                id: 3,
-                subject: "record the starwars marathon on tv",
-                created: 12345633,
-                updated: 12345639,
-                doned:   12345641,
-                description: "What channel?",
-                status: 2,
-            }
-        ];
-
+    // Add a factory that handles the APIs
     app.factory("todoAPI", [
+        "$q",
+        "APIService",
         function(
+            $q,
+            APIService
         ) {
-            return {
+            // Set up the service's constructor and parent
+            var TodoService = function() {};
+            TodoService.prototype = new APIService();
+
+            // Extend the prototype with any class-specific functionality
+            angular.extend(TodoService.prototype, {
                 list : function() {
-                    return data;
+                    var apiCall = new APIREQUEST.Class();
+                    apiCall.initialize("Todo", "list_todos");
+                    return this.deferred(apiCall).promise;
                 }
-            };
+            });
+
+            return new TodoService();
         }
     ]);
 });
