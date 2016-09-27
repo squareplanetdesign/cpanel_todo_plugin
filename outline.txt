@@ -331,24 +331,25 @@ Run it again.
 
 Add a todo:
 
+    Router:
+
+    $routeProvider.when("/todo/new", {
+        controller: "todosController",
+        templateUrl: CJT.buildFullPath("plugins/cpanel/todo/views/addTodoView.ptt")
+    });
+
+
     Service:
 
-    return {
-        add: function(id, subject, description) {
-            var request = new uapiRequest(...)
-            request.addArgument("id", id);
-            request.addArgument("subject", subject);
-            request.addArgument("description", description);
-            return promise;
-        }
+    add: function(subject, description) {
+        var request = new APIREQUEST.Class();
+        request.initialize("Todo", "add_todo");
+        request.addArgument("subject", subject);
+        request.addArgument("description", description);
+        return this.deferred(request).promise;
     }
 
-
     Controller:
-
-        $scope.init = function() {
-            $scope.newtodo = {};
-        };
 
         $scope.add = function(todo) {
             todoAPI.mark(todo.id).then(function(resp) {
@@ -356,7 +357,7 @@ Add a todo:
             });
         };
 
-        <button ng-click="add = true" ng-if="!add" ng-click="init()">Add</button>
+
         <div class="container" ng-if="add">
             <div class="col-xs-11">
                 <label>Subject:</label>
