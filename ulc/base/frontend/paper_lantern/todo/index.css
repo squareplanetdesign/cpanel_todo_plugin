@@ -39,3 +39,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 .row-shaded {
     background-color: #ddd;
 }
+
+.btn-add {
+    margin-bottom: 10px;
+}

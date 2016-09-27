@@ -1,0 +1,42 @@
+<form class="layout-medium">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-xs-11">
+                <label>Subject:</label>
+            </div>
+            <div class="col-xs-12">
+                <input type="text"
+                       ng-model="newtodo.subject"
+                       ng-disabled="saving">
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-xs-12">
+                <label>Description:</label>
+            </div>
+            <div class="col-xs-12">
+                <textarea ng-model="newtodo.description"
+                          ng-disabled="saving"
+                          rows="3" cols="50"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="form-group action-group">
+        <div class="row">
+            <div class="col-xs-12">
+                <button class="btn btn-primary"
+                        ng-click="add(newtodo)"
+                        ng-disabled="saving">
+                        Save
+                </button>
+                <button class="btn btn-link"
+                        ng-click="loadView('todos')"
+                        ng-disabled="saving">
+                        Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
