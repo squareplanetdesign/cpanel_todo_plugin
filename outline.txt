@@ -200,7 +200,7 @@ Wiring your view into the application
     cjt - maps to the paper_lantern/libraries/cjt2 or paper_lantern/libraries/cjt2-dist folders.
 
 Lets get it listing something:
-
+[
     {
         id: 1,
         subject: 'wash the car',
@@ -228,6 +228,7 @@ Lets get it listing something:
         description: 'What channel?',
         status: 2,
     }
+]
 
 Wiring hard-coded data in the app:
 
@@ -235,10 +236,6 @@ Wiring hard-coded data in the app:
     * They are stateless usually.
 
     >> app/services/todoAPI.js
-
-    cjt/api,
-    cjt/api/uapi,
-    cjt/api/uapiRequest,
 
     return {
         list: function() {
@@ -295,55 +292,42 @@ service:
     cjt/api/uapi,
     cjt/api/uapiRequest,
 
-    return {
-        list: function() {
-            var request = new uapiRequest("Todo", "list_todos")
+    // Add a factory that handles the APIs
+    app.factory("todoAPI", [
+        "$q",
+        "APIService",
+        function(
+            $q,
+            APIService
+        ) {
+            // Set up the service's constructor and parent
+            var TodoService = function() {};
+            TodoService.prototype = new APIService();
 
-            return promise;
+            // Extend the prototype with any class-specific functionality
+            angular.extend(TodoService.prototype, {
+                list : function() {
+                    var apiCall = new APIREQUEST.Class();
+                    apiCall.initialize("Todo", "list_todos");
+                    return this.deferred(apiCall).promise;
+                }
+            });
+
+            return new TodoService();
         }
-    }
+    ]);
 
 controller:
 
     todoAPI.list().then(function(resp) {
         $scope.todos = resp.data;
+    }).catch(function(error) {
+        // Do something with the error
     });
 
 Run it again.
 
     >> ???
-
-Filter todos
-
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-12 col-sm-6">
-                <input type="text" ng-model="subjectFilter" placeholder="Search">
-            </div>
-            <div class="col-xs-12 col-sm-6">
-                <label>
-                   <input type="checkbox"
-                        ng-model="hideDone"
-                        ng-checked="todo.status === 2" >
-                   <span>Hide Done</span>
-                </label>
-            </div>
-        </div>
-    </div>
-
-    <div class="row" ng-repeat"todo in todos | filter: by_subject_and_status   track by todo.id ">
-
-    var pattern, patternSubject;
-    $scope.by_subject_and_status = function(item) {
-        if (!pattern || patternSubject !== subjectFilter) {
-            pattern = new RegExp(subjectFilter);
-        }
-        if (hideDone) {
-            return pattern.test(item.subject) && item.status != 2;
-        } else {
-            return pattern.test(item.subject);
-        }
-    }
 
 Add a todo:
 
@@ -390,6 +374,40 @@ Add a todo:
                 <button ng-click="add(newtodo)">Save</button>
             </div>
         </div>
+
+Filter todos
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6">
+                <input type="text" ng-model="subjectFilter" placeholder="Search">
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <label>
+                   <input type="checkbox"
+                        ng-model="hideDone"
+                        ng-checked="todo.status === 2" >
+                   <span>Hide Done</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" ng-repeat"todo in todos | filter: by_subject_and_status   track by todo.id ">
+
+    var pattern, patternSubject;
+    $scope.by_subject_and_status = function(item) {
+        if (!pattern || patternSubject !== subjectFilter) {
+            pattern = new RegExp(subjectFilter);
+        }
+        if (hideDone) {
+            return pattern.test(item.subject) && item.status != 2;
+        } else {
+            return pattern.test(item.subject);
+        }
+    }
+
+
 
 Mark a todo as done
 
