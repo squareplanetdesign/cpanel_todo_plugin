@@ -128,6 +128,24 @@ define(
                         }
                     };
 
+                    $scope.edit = function(todo) {
+                        if (todo.edit) {
+                            todoAPI.update(todo).then(function(resp) {
+                                todo.doned   = resp.data.doned;
+                                todo.changed = resp.data.changed;
+                                todo.edit    = false;
+                            }).catch(function(error) {
+                                alertService.add({
+                                    type: "danger",
+                                    message: "Failed to update the todo: " + error,
+                                    id: "updateFailed"
+                                });
+                            });
+                        } else {
+                            todo.edit = true;
+                        }
+                    };
+
                     if (!todoData.todos) {
                         list();
                     } else {
