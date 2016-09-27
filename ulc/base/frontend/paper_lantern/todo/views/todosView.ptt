@@ -1,6 +1,19 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-xs-6 col-sm-8 col-md-8">
+            <input type="text"
+                   ng-model="subjectFilter"
+                   placeholder="Search">
+        </div>
+        <div class="col-xs-6 col-sm-4 col-md-2">
+            <label class="pull-right flip">
+               <input type="checkbox"
+                    ng-model="hideDone"
+                    ng-checked="hideDone" >
+               <span>Hide Done</span>
+            </label>
+        </div>
+        <div class="col-xs-12 col-md-2">
             <button class="btn btn-primary pull-right flip btn-add" ng-click="open_add_view()">New Item</button>
         </div>
     </div>
@@ -16,7 +29,7 @@
     </div>
     <div class="row todo"
          ng-class="{ 'row-shaded': $even }"
-         ng-repeat="todo in todos track by $index">
+         ng-repeat="todo in todos | filter: by_subject_and_status track by $index">
         <div class="col-xs-10 col-sm-11">
             <strong>{{todo.subject}}</strong>
         </div>

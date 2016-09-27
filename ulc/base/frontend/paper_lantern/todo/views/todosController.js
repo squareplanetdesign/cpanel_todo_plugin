@@ -84,6 +84,20 @@ define(
                         });
                     };
 
+                    // Hide done items initially
+                    $scope.hideDone = true;
+
+                    var pattern, patternSubject;
+                    $scope.by_subject_and_status = function(todo) {
+                        if (!pattern || patternSubject !== $scope.subjectFilter) {
+                            pattern = new RegExp($scope.subjectFilter);
+                        }
+                        if ($scope.hideDone) {
+                            return pattern.test(todo.subject) && todo.status !== 2;
+                        } else {
+                            return pattern.test(todo.subject);
+                        }
+                    };
 
                     if (!todoData.todos) {
                         list();
