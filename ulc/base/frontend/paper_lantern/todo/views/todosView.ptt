@@ -20,20 +20,32 @@
 </div>
 <div class="container-fluid" ng-if="todos.length">
     <div class="row row-titles">
-        <div class="col-xs-10 col-sm-11">
+        <div class="col-xs-9 col-sm-8">
             Todo
         </div>
-        <div class="col-xs-2 col-sm-1 text-center">
+        <div class="col-xs-2 col-sm-2 text-center">
+            Actions
+        </div>
+        <div class="col-xs-1 col-sm-2 text-center">
             Done
         </div>
     </div>
     <div class="row todo"
          ng-class="{ 'row-shaded': $even }"
          ng-repeat="todo in todos | filter: by_subject_and_status track by $index">
-        <div class="col-xs-10 col-sm-11">
-            <strong>{{todo.subject}}</strong>
+        <div class="col-xs-9 col-sm-8">
+            <strong ng-hide="todo.edit">{{todo.subject}}</strong>
+            <input ng-show="todo.edit" ng-model="todo.subject"/>
         </div>
-        <div class="col-xs-2 col-sm-1 text-center">
+        <div class="col-xs-2 col-sm-2 text-center">
+            <button class="btn btn-default btn-xs"
+                    ng-click="edit(todo)"
+                    title="{{todo.edit ? 'Save' : 'Edit'}}">
+                <span ng-hide="todo.edit" class="glyphicon glyphicon-pencil"></span>
+                <span ng-show="todo.edit" class="glyphicon glyphicon-floppy-disk"></span>
+            </button>
+        </div>
+        <div class="col-xs-1 col-sm-2 text-center">
             <input type="checkbox"
                    ng-model="todo.status"
                    ng-true-value="2"
@@ -42,7 +54,10 @@
                    ng-change="mark(todo)"/>
         </div>
         <div class="col-xs-12">
-            {{todo.description}}
+            <span ng-hide="todo.edit">{{todo.description}}</span>
+            <textarea ng-show="todo.edit"
+                      ng-model="todo.description"
+                      rows="3" cols="50"></textarea>
         </div>
     </div>
 </div>

@@ -49,6 +49,14 @@ define([
                     request.addArgument("id", todo.id);
                     request.addArgument("status", todo.status);
                     return this.deferred(request).promise;
+                },
+                update: function(todo) {
+                    var request = new APIREQUEST.Class();
+                    request.initialize("Todo", "update_todo");
+                    request.addArgument("id", todo.id);
+                    request.addArgument("subject", todo.subject);
+                    request.addArgument("description", todo.description);
+                    return this.deferred(request).promise;
                 }
             });
 
