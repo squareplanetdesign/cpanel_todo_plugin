@@ -21,11 +21,21 @@ define(
                     alertService,
                     todoAPI
                 ) {
-                    $scope.todos = todoAPI.list();
-                    alertService.add({
-                        type: "info",
-                        message: "Loaded the data",
-                        id: "loadedOk"
+                    todoAPI.list().then(function(resp) {
+                        $scope.todos = resp.data;
+                        if ($scope.todos && $scope.todos.length > 0) {
+                            alertService.add({
+                                type: "info",
+                                message: "Loaded the data",
+                                id: "loadedOk"
+                            });
+                        }
+                    }).catch(function(error) {
+                        alertService.add({
+                            type: "danger",
+                            message: "Faild to load the data: " + error,
+                            id: "loadFailed"
+                        });
                     });
                 }
             ]
