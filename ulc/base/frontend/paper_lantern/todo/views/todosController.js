@@ -3,6 +3,8 @@
 define(
     [
         "angular",
+        "cjt/services/alertService",
+        "app/services/todoAPI"
     ],
     function(angular) {
 
@@ -12,10 +14,19 @@ define(
         var controller = app.controller(
             "todosController", [
                 "$scope",
+                "alertService",
+                "todoAPI",
                 function(
-                    $scope
+                    $scope,
+                    alertService,
+                    todoAPI
                 ) {
-                    $scope.message = "A message for plugin developers.";
+                    $scope.todos = todoAPI.list();
+                    alertService.add({
+                        type: "info",
+                        message: "Loaded the data",
+                        id: "loadedOk"
+                    });
                 }
             ]
         );

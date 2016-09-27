@@ -1,1 +1,27 @@
-Message: <b>{{message}}</b>
+<div class="container-fluid">
+    <div class="row row-titles">
+        <div class="col-xs-10 col-sm-11">
+            Todo
+        </div>
+        <div class="col-xs-2 col-sm-1 text-center">
+            Done
+        </div>
+    </div>
+    <div class="row todo"
+         ng-class="{ 'row-shaded': $even }"
+         ng-repeat="todo in todos track by $index">
+        <div class="col-xs-10 col-sm-11">
+            <strong>{{todo.subject}}</strong>
+        </div>
+        <div class="col-xs-2 col-sm-1 text-center">
+            <input type="checkbox"
+                   ng-model="todo.status"
+                   ng-true-value="2"
+                   ng-false-value="1"
+                   ng-checked="todo.status === 2"/>
+        </div>
+        <div class="col-xs-12">
+            {{todo.description}}
+        </div>
+    </div>
+</div>

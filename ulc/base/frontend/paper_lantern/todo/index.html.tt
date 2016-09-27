@@ -33,13 +33,15 @@ WRAPPER '_assets/master.html.tt'
                                        # initializing the master application in
                                        # addition to our app.
     page_stylesheets = [
-        'todo/index.css'               # styles for our page
+        'plugins/cpanel/todo/index.css' # styles for our page
     ]
 -%]
 
     <div class="body-content">
         <div ng-controller="applicationController">
-            <cp-alert-list></cp-alert-list>
+            <div class="container-fluid">
+                <cp-alert-list></cp-alert-list>
+            </div>
             <div id="viewContent"
                  class="ng-cloak"
                  ng-view

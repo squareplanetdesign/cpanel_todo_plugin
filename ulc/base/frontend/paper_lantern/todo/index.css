@@ -1,0 +1,12 @@
+.row-titles {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.todo {
+    padding: 10px;
+}
+
+.row-shaded {
+    background-color: #ddd;
+}
