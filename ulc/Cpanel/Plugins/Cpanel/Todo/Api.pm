@@ -1,11 +1,11 @@
 package Cpanel::Plugins::Cpanel::Todo::Api;
 
-use Cpanel                         ();
+use Cpanel                              ();
 use Cpanel::Plugins::Cpanel::Todo::Item ();
-use File::Slurp                    ();
-use File::Path                     ();
-use Try::Tiny                      ();
-use JSON                           ();
+use File::Slurp                         ();
+use File::Path                          ();
+use Try::Tiny                           ();
+use JSON                                ();
 
 our $TODO_FILENAME = 'todo.json';
 
@@ -42,16 +42,11 @@ sub init {
         $self->{autosave} = 0;
     }
 
-    if (!_is_virtual() && !_is_reseller()) {
+    if (!_is_virtual()) {
         $self->{file} = "$self->{home}/$TODO_FILENAME";
     }
     elsif (_is_virtual()) {
         my $path = $self->{home} . '/virtual/' . _virtual_user();
-        File::Path::make_path($path);
-        $self->{file} = "$path/$TODO_FILENAME";
-    }
-    elsif (_is_reseller()) {
-        my $path = $self->{home} . '/resellers/' . _reseller_user();
         File::Path::make_path($path);
         $self->{file} = "$path/$TODO_FILENAME";
     }
@@ -65,19 +60,11 @@ sub _get_user {
     return (getpwuid $<);
 }
 
-sub _is_reseller {
-    return $Cpanel::isreseller;
-}
-
 sub _is_virtual {
     return $Cpanel::authuser =~ m/[^@]*@[^@]/;
 }
 
 sub _virtual_user {
-    return $Cpanel::authuser;
-}
-
-sub _reseller_user {
     return $Cpanel::authuser;
 }
 
