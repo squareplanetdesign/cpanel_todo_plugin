@@ -338,18 +338,19 @@ Add a todo:
         templateUrl: CJT.buildFullPath("plugins/cpanel/todo/views/addTodoView.ptt")
     });
 
+    todosView.ptt
 
-    Service:
-
-    add: function(subject, description) {
-        var request = new APIREQUEST.Class();
-        request.initialize("Todo", "add_todo");
-        request.addArgument("subject", subject);
-        request.addArgument("description", description);
-        return this.deferred(request).promise;
-    }
+    <button ng-click="open_add_view()">New Item</button>
 
     Controller:
+
+        $scope.open_add_view = function() {
+            $scope.newTodo = {
+                subject: "",
+                description: ""
+            };
+            $scope.loadView("todo/new");
+        };
 
         $scope.add = function(todo) {
             todoAPI.mark(todo.id).then(function(resp) {
@@ -357,24 +358,64 @@ Add a todo:
             });
         };
 
+    addTodoView.ptt
 
-        <div class="container" ng-if="add">
-            <div class="col-xs-11">
+        <div>
+            <div>
                 <label>Subject:</label>
             </div>
-            <div class="col-xs-12">
+            <div>
                 <input type="text" ng-model="newtodo.subject">
             </div>
-            <div class="col-xs-12">
+            <div>
                 <label>Description:</label>
             </div>
-            <div class="col-xs-12">
+            <div>
                 <textarea ng-model="newtodo.description" rows="3" cols="50"></textarea>
             </div>
-            <div class="col-xs-12">
+            <div>
                 <button ng-click="add(newtodo)">Save</button>
             </div>
         </div>
+
+      Service:
+
+    add: function(todo) {
+        var request = new APIREQUEST.Class();
+        request.initialize("Todo", "add_todo");
+        request.addArgument("subject", todo.subject);
+        request.addArgument("description", todo.description);
+        return this.deferred(request).promise;
+    }
+
+Mark a todo as done
+
+    return {
+        mark: function(id) {
+            var request = new uapiRequest(...)
+            request.addArgument("id", id);
+            return promise;
+        }
+    }
+
+controller:
+
+    $scope.mark = function(todo) {
+        todoAPI.mark(todo.id).then(function(resp) {
+            todo.status  = resp.data.status;
+            todo.doned   = resp.data.doned;
+            todo.changed = resp.data.changed;
+        });
+    }
+
+template:
+
+    <input type="checkbox"
+           ng-model="todo.status"
+           ng-true-value="2"
+           ng-false-value="1"
+           ng-checked="todo.status === 2"
+           ng-change="mark(todo)">
 
 Filter todos
 
@@ -410,34 +451,7 @@ Filter todos
 
 
 
-Mark a todo as done
 
-    return {
-        mark: function(id) {
-            var request = new uapiRequest(...)
-            request.addArgument("id", id);
-            return promise;
-        }
-    }
-
-controller:
-
-    $scope.mark = function(todo) {
-        todoAPI.mark(todo.id).then(function(resp) {
-            todo.status  = resp.data.status;
-            todo.doned   = resp.data.doned;
-            todo.changed = resp.data.changed;
-        });
-    }
-
-template:
-
-    <input type="checkbox"
-           ng-model="todo.status"
-           ng-true-value="2"
-           ng-false-value="1"
-           ng-checked="todo.status === 2"
-           ng-change="mark(todo)">
 
 Edit a todo.
 
