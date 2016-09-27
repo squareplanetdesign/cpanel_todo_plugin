@@ -2,14 +2,14 @@
 
 package config::cgi;
 
-use lib '../../../../';
+use lib '../../../';
 
-use Cpanel::ThirdParty::CGI::JSON::Config ();
+use Cpanel::Plugins::Cpanel::CGI::JSON::Config ();
 
 __PACKAGE__->run( @ARGV ) unless caller();
 
 sub run {
-    Cpanel::ThirdParty::CGI::JSON::Config::run(@_);
+    Cpanel::Plugins::Cpanel::CGI::JSON::Config::run(@_);
 }
 
 __END__
