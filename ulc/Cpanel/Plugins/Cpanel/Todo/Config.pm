@@ -6,7 +6,7 @@ use File::Copy  ();
 use JSON        ();
 
 our $FILE_NAME = 'config.json';
-our $FILE_PATH = "/var/cpanel/thirdparty/todo";
+our $FILE_PATH = "/var/cpanel/plugins/cpanel/config/todo";
 
 sub new {
     my ($class) = @_;
@@ -45,13 +45,13 @@ sub config {
 sub _default {
     my $self = shift;
     return {
-        whm => {
+        whostmgrd => {
             enabled => JSON::true,
         },
-        cpanel => {
+        cpaneld => {
             enabled => JSON::true,
         },
-        webmail => {
+        webmaild => {
             enabled => JSON::true,
         },
     };
