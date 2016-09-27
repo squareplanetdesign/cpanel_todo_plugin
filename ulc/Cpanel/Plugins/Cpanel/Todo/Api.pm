@@ -148,6 +148,8 @@ sub mark {
     my $self = shift;
     my ($id, $status) = @_;
 
+    $status += 0; # Make sure it numeric
+
     # Setup defaults
     $status = $Cpanel::Plugins::Cpanel::Todo::Item::STATUS{done}
       if !defined $status;
