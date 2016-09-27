@@ -1,3 +1,10 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12">
+            <button class="btn btn-primary pull-right flip btn-add" ng-click="open_add_view()">New Item</button>
+        </div>
+    </div>
+</div>
 <div class="container-fluid" ng-if="todos.length">
     <div class="row row-titles">
         <div class="col-xs-10 col-sm-11">

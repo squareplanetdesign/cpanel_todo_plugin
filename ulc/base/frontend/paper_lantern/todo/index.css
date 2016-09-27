@@ -10,3 +10,7 @@
 .row-shaded {
     background-color: #ddd;
 }
+
+.btn-add {
+    margin-bottom: 10px;
+}

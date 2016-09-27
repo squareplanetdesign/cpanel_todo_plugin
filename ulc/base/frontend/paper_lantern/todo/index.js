@@ -28,6 +28,10 @@ define(
 
                     var app = angular.module("App");
 
+                    app.value("todoData", {
+                        todos: null
+                    });
+
                     // routing
                     app.config(["$routeProvider",
                         function($routeProvider) {
@@ -36,6 +40,11 @@ define(
                             $routeProvider.when("/todos/", {
                                 controller: "todosController",
                                 templateUrl: CJT.buildFullPath("plugins/cpanel/todo/views/todosView.ptt")
+                            });
+
+                            $routeProvider.when("/todo/new", {
+                                controller: "todosController",
+                                templateUrl: CJT.buildFullPath("plugins/cpanel/todo/views/addTodoView.ptt")
                             });
 
                             $routeProvider.otherwise({

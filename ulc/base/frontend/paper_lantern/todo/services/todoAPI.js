@@ -32,9 +32,16 @@ define([
             // Extend the prototype with any class-specific functionality
             angular.extend(TodoService.prototype, {
                 list : function() {
-                    var apiCall = new APIREQUEST.Class();
-                    apiCall.initialize("Todo", "list_todos");
-                    return this.deferred(apiCall).promise;
+                    var request = new APIREQUEST.Class();
+                    request.initialize("Todo", "list_todos");
+                    return this.deferred(request).promise;
+                },
+                add: function(todo) {
+                    var request = new APIREQUEST.Class();
+                    request.initialize("Todo", "add_todo");
+                    request.addArgument("subject", todo.subject);
+                    request.addArgument("description", todo.description);
+                    return this.deferred(request).promise;
                 }
             });
 
