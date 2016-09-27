@@ -25,7 +25,8 @@
                    ng-model="todo.status"
                    ng-true-value="2"
                    ng-false-value="1"
-                   ng-checked="todo.status === 2"/>
+                   ng-checked="todo.status === 2"
+                   ng-change="mark(todo)"/>
         </div>
         <div class="col-xs-12">
             {{todo.description}}

@@ -99,6 +99,21 @@ define(
                         });
                     };
 
+                    $scope.mark = function(todo) {
+                        todoAPI.mark(todo).then(function(resp) {
+                            todo.status  = resp.data.status;
+                            todo.doned   = resp.data.doned;
+                            todo.changed = resp.data.changed;
+                        }).catch(function(error) {
+                            alertService.add({
+                                type: "danger",
+                                message: "Failed to add the mark the todo: " + error,
+                                id: "markFailed"
+                            });
+                        });
+                    };
+
+
                     if (!todoData.todos) {
                         list();
                     } else {
