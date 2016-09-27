@@ -390,12 +390,12 @@ Add a todo:
 
 Mark a todo as done
 
-    return {
-        mark: function(id) {
-            var request = new uapiRequest(...)
-            request.addArgument("id", id);
-            return promise;
-        }
+    mark: function(todo) {
+        var request = new APIREQUEST.Class();
+        request.initialize("Todo", "mark_todo");
+        request.addArgument("id", todo.id);
+        request.addArgument("status", todo.status);
+        return this.deferred(request).promise;
     }
 
 controller:
