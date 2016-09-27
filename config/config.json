@@ -1,11 +1,11 @@
 {
-    "whm" : {
+    "whostmgrd" : {
+        "enabled" : false
+    },
+    "cpaneld" : {
         "enabled" : true
     },
-    "cpanel" : {
-        "enabled" : true
-    },
-    "webmail" : {
-        "enabled" : true
+    "webmaild" : {
+        "enabled" : false
     }
 }
