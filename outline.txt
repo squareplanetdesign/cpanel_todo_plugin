@@ -419,21 +419,23 @@ template:
 
 Filter todos
 
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-12 col-sm-6">
-                <input type="text" ng-model="subjectFilter" placeholder="Search">
-            </div>
-            <div class="col-xs-12 col-sm-6">
-                <label>
-                   <input type="checkbox"
-                        ng-model="hideDone"
-                        ng-checked="todo.status === 2" >
-                   <span>Hide Done</span>
-                </label>
-            </div>
-        </div>
+    Add the filter controls:
+
+    <div class="col-xs-12 col-sm-6 col-md-5">
+        <input type="text"
+               ng-model="subjectFilter"
+               placeholder="Search">
     </div>
+    <div class="col-xs-12 col-sm-6 col-md-5">
+        <label>
+           <input type="checkbox"
+                ng-model="hideDone"
+                ng-checked="todo.status === 2" >
+           <span>Hide Done</span>
+        </label>
+    </div>
+
+    Add the filter:
 
     <div class="row" ng-repeat"todo in todos | filter: by_subject_and_status   track by todo.id ">
 
@@ -450,56 +452,49 @@ Filter todos
     }
 
 
-
-
-
 Edit a todo.
 
     Service:
 
-    return {
-        update: function(id, subject, description) {
-            var request = new uapiRequest(...)
-            request.addArgument("id", id);
-            request.addArgument("subject", subject);
-            request.addArgument("description", description);
-            return promise;
-        }
+    update: function(todo) {
+        var request = new APIREQUEST.Class();
+        request.initialize("Todo", "update_todo");
+        request.addArgument("id", todo.id);
+        request.addArgument("subject", todo.subject);
+        request.addArgument("description", todo.description);
+        return this.deferred(request).promise;
     }
-
 
     Controller:
 
-    $scope.update = function(todo) {
-        todoAPI.update(todo.id, todo.subject, todo.description).then(function(resp) {
-            todo.doned   = resp.data.doned;
-            todo.changed = resp.data.changed;
-        });
-    }
+    $scope.edit = function(todo) {
+        if (todo.edit) {
+            todoAPI.update(todo).then(function(resp) {
+                todo.doned   = resp.data.doned;
+                todo.changed = resp.data.changed;
+                todo.edit    = false;
+            });
+        } else {
+            todo.edit = true;
+        }
+    };
 
     View:
 
-            <div class="col-xs-11">
-                <span ng-if="!todo.edit">
-                    {{todo.subject}}
-                    <span class="glyphicon glyphicon-pencil" ng-click="todo.edit = true"></span>
-                </span>
-                <span ng-if="todo.edit">
-                    <input type="text" ng-model="todo.subject">
-                    <span class="glyphicon glyphicon-ok" ng-click="todo.edit = false"></span>
-                </span>
-            </div>
-            <div class="col-xs-1">
-                <input type="checkbox"
-                       ng-model="todo.status"
-                       ng-true-value="2"
-                       ng-false-value="1"
-                       ng-checked="todo.status === 2">
-            </div>
-            <div class="col-xs-12">
-                <span ng-if="!todo.edit">{{todo.description}}</span>
-                <textarea ng-if="todo.edit" ng-model="todo.description" rows="3" cols="50"></textarea>
-            </div>
+    <strong ng-hide="todo.edit">{{todo.subject}}</strong>
+    <input ng-show="todo.edit" ng-model="todo.subject"/>
+
+
+    <strong ng-hide="todo.edit">{{todo.description}}</strong>
+    <input ng-show="todo.edit" ng-model="todo.description"/>
+
+
+    <button ng-click="edit(todo)">
+        <span ng-hide="todo.edit" class="glyphicon glyphicon-pencil"
+              title="Edit"></span>
+        <span ng-hide="todo.edit" class="glyphicon glyphicon-floppy-disk"
+              title="Save"></span>
+    </button>
 
 Delete a todo.
 
