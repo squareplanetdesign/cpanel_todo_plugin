@@ -43,15 +43,18 @@ define(
                     app.config(["$routeProvider",
                         function($routeProvider) {
 
+                            /* Optimization 2: Preload view partials,
+                               we don't need their full paths. */
+
                             // Setup the routes
                             $routeProvider.when("/todos/", {
                                 controller: "todosController",
-                                templateUrl: CJT.buildFullPath("plugins/cpanel/todo/views/todosView.ptt")
+                                templateUrl: "views/todosView.ptt"
                             });
 
                             $routeProvider.when("/todo/new", {
                                 controller: "todosController",
-                                templateUrl: CJT.buildFullPath("plugins/cpanel/todo/views/addTodoView.ptt")
+                                templateUrl: "views/addTodoView.ptt"
                             });
 
                             $routeProvider.otherwise({
