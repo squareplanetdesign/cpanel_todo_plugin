@@ -178,6 +178,39 @@ Wiring the bootstrap code into your template
 
     * PROCESS '_assets/cjt2_include.tmpl';
 
+Create the index.dist.js:
+
+// Loads the application with the pre-built combined files
+require( ["frameworksBuild", "locale!cjtBuild", "app/index.cmb"], function() {
+    require(
+        [
+            "master/master",
+            "app/index"
+        ],
+        function(MASTER, APP) {
+            MASTER();
+            APP();
+        }
+    );
+});
+
+Create the index.js:
+
+require(
+    [
+        // Application Modules
+        "cjt/views/applicationController",
+    ], function() {
+        var appContent = angular.element("#content");
+        if(appContent[0] !== null){
+            // apply the app after requirejs loads everything
+            angular.bootstrap(appContent[0], ["App"]);
+        }
+    }
+);
+
+
+
     >> Lets try it
 
 Next add our first view
@@ -191,12 +224,22 @@ Wiring your view into the application
 
        app/views/todoController
 
+    app - maps to your applications current directory
+
+ require([
+     // Application Modules
+     "cjt/views/applicationController",
+
+    "app/views/todosController"
+ ], function() {...});
+
+User some cjt2 components: (Step 4)
+
     * You can also bring in cjt2 components
 
        cjt/directive/alertDirective
        cjt/services/alertService
 
-    app - maps to your applications current directory
     cjt - maps to the paper_lantern/libraries/cjt2 or paper_lantern/libraries/cjt2-dist folders.
 
 Lets get it listing something:
