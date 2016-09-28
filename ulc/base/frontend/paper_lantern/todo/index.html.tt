@@ -59,6 +59,15 @@ WRAPPER '_assets/master.html.tt'
         PAGE.todos = [% todos.json() %];
     </script>
 
+    [%# Optimization 2: Preload view partials %]
+    <script type="text/ng-template" id="views/todosView.ptt">
+    [% PROCESS 'views/todosView.ptt' %]
+    </script>
+    <script type="text/ng-template" id="views/addTodoView.ptt">
+    [% PROCESS 'views/addTodoView.ptt' %]
+    </script>
+
+
     [% PROCESS '_assets/cjt2_header_include.tt' %]
 
 [% END #wrapper -%]
