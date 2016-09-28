@@ -3,8 +3,9 @@
 # TODO: Add prerequsites.
 # TODO: Make this suitable for a real plugin.
 
-/usr/local/cpanel/3rdparty/perl/522/bin/cpan Test::MockTime
-/usr/local/cpanel/3rdparty/perl/522/bin/cpan URL::Encode
+# Only needed to get the tests to perl run
+#/usr/local/cpanel/3rdparty/perl/522/bin/cpan Test::MockTime
+#/usr/local/cpanel/3rdparty/perl/522/bin/cpan URL::Encode
 
 # Setup the whm application
 cd /usr/local/cpanel/whostmgr/docroot/templates/
