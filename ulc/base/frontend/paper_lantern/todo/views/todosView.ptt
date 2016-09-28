@@ -44,6 +44,11 @@
                 <span ng-hide="todo.edit" class="glyphicon glyphicon-pencil"></span>
                 <span ng-show="todo.edit" class="glyphicon glyphicon-floppy-disk"></span>
             </button>
+            <button class="btn btn-default btn-xs"
+                    ng-click="remove(todo)"
+                    title="Remove">
+                <span class="glyphicon glyphicon-remove"></span>
+            </button>
         </div>
         <div class="col-xs-1 col-sm-2 text-center">
             <input type="checkbox"

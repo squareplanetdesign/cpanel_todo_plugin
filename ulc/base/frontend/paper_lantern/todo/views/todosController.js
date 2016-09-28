@@ -32,10 +32,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 define(
     [
         "angular",
+        "lodash",
         "cjt/services/alertService",
         "app/services/todoAPI"
     ],
-    function(angular) {
+    function(angular, _) {
 
         // Retrieve the current application
         var app = angular.module("App");
@@ -144,6 +145,26 @@ define(
                         } else {
                             todo.edit = true;
                         }
+                    };
+
+                    $scope.remove = function(todo) {
+                        todoAPI.remove(todo).then(function() {
+                            var index = _.findIndex(
+                                $scope.todos,
+                                function(item) {
+                                    return todo.id === item.id;
+                                });
+
+                            if (index !== -1) {
+                                $scope.todos.splice(index, 1);
+                            }
+                        }).catch(function(error) {
+                            alertService.add({
+                                type: "danger",
+                                message: "Failed to remove the todo: " + error,
+                                id: "removeFailed"
+                            });
+                        });
                     };
 
                     if (!todoData.todos) {

@@ -57,6 +57,12 @@ define([
                     request.addArgument("subject", todo.subject);
                     request.addArgument("description", todo.description);
                     return this.deferred(request).promise;
+                },
+                remove: function(todo) {
+                    var request = new APIREQUEST.Class();
+                    request.initialize("Todo", "remove_todo");
+                    request.addArgument("id", todo.id);
+                    return this.deferred(request).promise;
                 }
             });
 
