@@ -63,13 +63,11 @@ What are each of these components?
   * Available to us and to you.
   * Substantial documentation in the JavaScript files.
   * /usr/local/cpanel/share/libraries/cjt2/src
-  * Some of the build system is published, but missing key components (NodeJS) on production boxes.
   * We distribute both a production build and debug versions of cjt 2.0 with the product.
 
 What are each of these components?
 
   * UAPI - cpanels preferred API model for developing applications for cPanel and Webmail
-  * CGI  - unfortuatlly you can't take advantage of Web Host Managers api system, so we have to fall back to CGI for building third party WHM applications.
 
 A note about where to find stuff in cPanel folders.
 
@@ -146,6 +144,8 @@ Lets start writing our first angular application for cpanel.
                  ng-cloak></div>
         </div>
     </div>
+
+    >> git checkout
 
     frontend/paper_lantern/plugins/cpanel/todo/index.html
 
