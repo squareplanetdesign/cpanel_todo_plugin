@@ -1,3 +1,8 @@
+# NOTE: This is not complete yet
+# TODO: Make it more robust
+# TODO: Add prerequsites.
+# TODO: Make this suitable for a real plugin.
+
 /usr/local/cpanel/3rdparty/perl/522/bin/cpan Test::MockTime
 /usr/local/cpanel/3rdparty/perl/522/bin/cpan URL::Encode
 
