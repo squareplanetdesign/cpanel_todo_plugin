@@ -1,4 +1,4 @@
-/* global require: false, define: false */
+/* global require: false, define: false, PAGE: false */
 
 define(
     [
@@ -28,8 +28,15 @@ define(
 
                     var app = angular.module("App");
 
+                    var todos = [];
+
+                    // Optimization 1: Prefetch data
+                    if (PAGE.todos && PAGE.todos.status) {
+                        todos = PAGE.todos.data;
+                    }
+
                     app.value("todoData", {
-                        todos: null
+                        todos: todos
                     });
 
                     // routing

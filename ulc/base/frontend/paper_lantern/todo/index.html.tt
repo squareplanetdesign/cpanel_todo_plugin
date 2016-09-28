@@ -14,6 +14,11 @@ USE JSON;
 #
 SET CPANEL.CPVAR.dprefix = "../../../";
 
+# Optimization 1: Prefetch data
+SET todos = Uapi.exec('Todo', 'list_todos', {
+    'api.normalize' => 1,
+});
+
 # If you plugin installs so it participates in feature control.
 #SET has_feature = CPANEL.feature('plugin_cpanel_todo');
 
@@ -50,7 +55,8 @@ WRAPPER '_assets/master.html.tt'
     </div>
 
     <script type="text/javascript">
-        PAGE.todos = []; // TODO: Add prefetch data
+        /* Optimization 1: Prefetch */
+        PAGE.todos = [% todos.json() %];
     </script>
 
     [% PROCESS '_assets/cjt2_header_include.tt' %]
