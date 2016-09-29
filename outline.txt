@@ -242,7 +242,7 @@ User some cjt2 components: (Step 4)
 
     cjt - maps to the paper_lantern/libraries/cjt2 or paper_lantern/libraries/cjt2-dist folders.
 
-Lets get it listing something:
+Lets get it listing something: (Step 5)
 [
     {
         id: 1,
@@ -443,13 +443,18 @@ Mark a todo as done
 
 controller:
 
-    $scope.mark = function(todo) {
-        todoAPI.mark(todo.id).then(function(resp) {
-            todo.status  = resp.data.status;
-            todo.doned   = resp.data.doned;
-            todo.changed = resp.data.changed;
+$scope.mark = function(todo) {
+    todoAPI.mark(todo).then(function(resp) {
+        todo.status  = resp.data.status;
+        todo.doned   = resp.data.doned;
+        todo.changed = resp.data.changed;
+    }).catch(function(error) {
+        alertService.add({
+            type: "danger", id: "markFailed",
+            message: "Failed: " + error
         });
-    }
+    });
+};
 
 template:
 
@@ -482,17 +487,20 @@ Filter todos
 
     <div class="row" ng-repeat"todo in todos | filter: by_subject_and_status   track by todo.id ">
 
-    var pattern, patternSubject;
-    $scope.by_subject_and_status = function(item) {
-        if (!pattern || patternSubject !== subjectFilter) {
-            pattern = new RegExp(subjectFilter);
-        }
-        if (hideDone) {
-            return pattern.test(item.subject) && item.status != 2;
-        } else {
-            return pattern.test(item.subject);
-        }
+// Hide done items initially
+$scope.hideDone = true;
+var pattern, patternSubject;
+$scope.by_subject_and_status = function(todo) {
+    if (!pattern || patternSubject !== $scope.subjectFilter) {
+        pattern = new RegExp($scope.subjectFilter);
     }
+    if ($scope.hideDone) {
+        return pattern.test(todo.subject) && todo.status !== 2;
+    } else {
+        return pattern.test(todo.subject);
+    }
+};
+
 
 
 Edit a todo.
@@ -544,10 +552,11 @@ Delete a todo.
     Service:
 
     return {
-        remove: function(id) {
-            var request = new uapiRequest(...)
-            request.addArgument("id", id);
-            return promise;
+        remove: function(todo) {
+            var request = new APIREQUEST.Class();
+            request.initialize("Todo", "remove_todo");
+            request.addArgument("id", todo.id);
+            return this.deferred(request).promise;
         }
     }
 
