@@ -2,11 +2,12 @@ Short Term:
 
 Get the installer working.
 Get the plugin icon and menu item working.
-Reorganize commits to only have relevent commits in the branch:
+Reorganize commits to only have relevant commits in the branch:
    Squash all the underlying infrastructure so there is a sinlge
    commit for it a list of Step #: and Extra #: commits for the
    lessons.
-Put togather the slides from the outline.
+Put together the slides from the outline for the ctj2 presentation. (Done)
+Put together the slides from the outline for the localization presentation.
 Create a branch with localization demo.
 
 Long Term:
