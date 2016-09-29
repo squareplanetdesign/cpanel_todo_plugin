@@ -563,16 +563,30 @@ Delete a todo.
 
     Controller:
 
+    [
+        "angular",
+        "lodash",
+        "cjt/services/alertService",
+        "app/services/todoAPI"
+    ],
+    function(angular, _) {
+
+
     $scope.remove = function(todo) {
-        todoAPI.remove(todo.id).then(function(resp) {
-            var index = _.findIndex($scope.todos, function(item) {
-                return todo.id == item.id
-            });
+        todoAPI.remove(todo).then(function() {
+            var index = _.findIndex( $scope.todos, function(item) {
+                    return todo.id === item.id;
+                });
             if (index !== -1) {
                 $scope.todos.splice(index, 1);
             }
+        }).catch(function(error) {
+            alertService.add({
+                type: "danger", id: "removeFailed",
+                message: error
+            });
         });
-    }
+    };
 
     View:
 
@@ -588,20 +602,57 @@ Advanced topics:
 
     * use an api in your main template to fetch your data before the page loads
 
-    SET todos = Uapi.exec('Todo', 'list_todos', {
-        'api.sort_column'    => 'created',
-        'api.normalize'      => 1,
-    });
+SET todos = Uapi.exec('Todo', 'list_todos', {
+    'api.sort_column'    => 'created',
+});
+
+<script type="text/javascript">
+    /* Optimization 1: Prefetch */
+    PAGE.todos = [% todos.json() %];
+</script>
+
+
+var todos = [];
+
+// Optimization 1: Prefetch data
+if (PAGE.todos && PAGE.todos.status) {
+    todos = PAGE.todos.data;
+}
+app.value("todoData", {
+    todos: todos
+});
+
 
   Prefetch your view partials
 
     * embed your view partials in your main template.
 
+    [%# Optimization 2: Preload view partials %]
+    <script type="text/ng-template" id="views/todosView.ptt">
+    [% PROCESS 'views/todosView.ptt' %]
+    </script>
+    <script type="text/ng-template" id="views/addTodoView.ptt">
+    [% PROCESS 'views/addTodoView.ptt' %]
+    </script>
+
+    * Update the routers to load the cached templates
+
+    $routeProvider.when("/todos/", {
+         controller: "todosController",
+        templateUrl: "views/todosView.ptt"
+    });
+
+    $routeProvider.when("/todo/new", {
+        controller: "todosController",
+        templateUrl: "views/addTodoView.ptt"
+    });
+
+
   Optimizing your application:
 
+    * node/npm
     * grunt/gulp
     * r.js
-    * node/npm
 
   Localizing your applications:
 
