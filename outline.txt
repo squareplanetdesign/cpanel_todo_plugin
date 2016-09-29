@@ -403,25 +403,25 @@ Add a todo:
 
     addTodoView.ptt
 
+    <div>
         <div>
-            <div>
-                <label>Subject:</label>
-            </div>
-            <div>
-                <input type="text" ng-model="newtodo.subject">
-            </div>
-            <div>
-                <label>Description:</label>
-            </div>
-            <div>
-                <textarea ng-model="newtodo.description" rows="3" cols="50"></textarea>
-            </div>
-            <div>
-                <button ng-click="add(newtodo)">Save</button>
-            </div>
+            <label>Subject:</label>
         </div>
+        <div>
+            <input type="text" ng-model="newtodo.subject">
+        </div>
+        <div>
+            <label>Description:</label>
+        </div>
+        <div>
+            <textarea ng-model="newtodo.description" rows="3" cols="50"></textarea>
+        </div>
+        <div>
+            <button ng-click="add(newtodo)">Save</button>
+        </div>
+    </div>
 
-      Service:
+    Service:
 
     add: function(todo) {
         var request = new APIREQUEST.Class();
@@ -487,21 +487,19 @@ Filter todos
 
     <div class="row" ng-repeat"todo in todos | filter: by_subject_and_status   track by todo.id ">
 
-// Hide done items initially
-$scope.hideDone = true;
-var pattern, patternSubject;
-$scope.by_subject_and_status = function(todo) {
-    if (!pattern || patternSubject !== $scope.subjectFilter) {
-        pattern = new RegExp($scope.subjectFilter);
-    }
-    if ($scope.hideDone) {
-        return pattern.test(todo.subject) && todo.status !== 2;
-    } else {
-        return pattern.test(todo.subject);
-    }
-};
-
-
+    // Hide done items initially
+    $scope.hideDone = true;
+    var pattern, patternSubject;
+    $scope.by_subject_and_status = function(todo) {
+        if (!pattern || patternSubject !== $scope.subjectFilter) {
+            pattern = new RegExp($scope.subjectFilter);
+        }
+        if ($scope.hideDone) {
+            return pattern.test(todo.subject) && todo.status !== 2;
+        } else {
+            return pattern.test(todo.subject);
+        }
+    };
 
 Edit a todo.
 
@@ -590,11 +588,11 @@ Delete a todo.
 
     View:
 
-            <div class="col-xs-12">
-                <span ng-if="!todo.edit">{{todo.description}}</span>
-                <textarea ng-if="todo.edit" ng-model="todo.description" rows="3" cols="50"></textarea>
-                <button ng-click="remove(item)">Delete</button>
-            </div>
+    <div class="col-xs-12">
+        <span ng-if="!todo.edit">{{todo.description}}</span>
+        <textarea ng-if="todo.edit" ng-model="todo.description" rows="3" cols="50"></textarea>
+        <button ng-click="remove(item)">Delete</button>
+    </div>
 
 Advanced topics:
 
