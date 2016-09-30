@@ -14,6 +14,9 @@
 
 package Cpanel::Plugins::Cpanel::Todo::Item;
 
+use strict;
+use warnings;
+
 use Carp ();
 
 our %STATUS = (
@@ -81,8 +84,6 @@ sub init {
             if (my $update_fn = $update->{$key}) {
                 &$update_fn($self, %opts);
             }
-
-            $changed = 1;
         }
     }
 }

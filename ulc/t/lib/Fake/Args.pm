@@ -14,6 +14,9 @@
 
 package Fake::Args;
 
+use strict;
+use warnings;
+
 sub new {
     my ($class, %opts) = @_;
 

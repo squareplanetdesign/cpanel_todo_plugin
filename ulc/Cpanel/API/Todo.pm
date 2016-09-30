@@ -15,8 +15,6 @@
 use strict;
 use warnings;
 
-1;
-
 package Cpanel::API::Todo;
 
 use Cpanel                           ();

@@ -14,6 +14,9 @@
 
 package Cpanel::Plugins::Cpanel::Todo::Api;
 
+use strict;
+use warnings;
+
 use Cpanel                              ();
 use Cpanel::Plugins::Cpanel::Todo::Item ();
 use File::Slurp                         ();
@@ -64,6 +67,9 @@ sub init {
         File::Path::make_path($path);
         $self->{file} = "$path/$TODO_FILENAME";
     }
+
+    use Data::Dumper;
+    print STDERR Dumper($self);
 
     if ($self->{autoload}) {
         $self->load();
@@ -132,7 +138,7 @@ sub remove {
     my $len_before = @{$self->{list}};
 
     foreach my $remove (@{$removes}) {
-        for(my $i = 0, $l = @{$self->{list}}; $i < $l; $i++) {
+        for(my $i = 0, my $l = @{$self->{list}}; $i < $l; $i++) {
             my $item = $self->{list}[$i];
             if ($item && ($item->id() == $remove->id())) {
                 splice @{$self->{list}}, $i, 1;
@@ -224,7 +230,7 @@ sub load {
     }
 
     my $list = $self->_load_list();
-    for (my $i = 0, $l = @$list; $i < $l; $i++) {
+    for (my $i = 0, my $l = @$list; $i < $l; $i++) {
         my $item = $list->[$i];
 
         if ($item->{id} > $self->{max_id}) {
@@ -251,7 +257,7 @@ sub _load_list {
     my $self = shift;
 
     my $json = eval { File::Slurp::read_file($self->{file})};
-    if ($exception = $@) {
+    if (my $exception = $@) {
         $self->{exception} = $exception;
         return [];
     }
