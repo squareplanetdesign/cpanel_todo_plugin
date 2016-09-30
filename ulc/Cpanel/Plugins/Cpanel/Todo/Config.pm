@@ -148,7 +148,7 @@ sub param {
     my @path = split /[.]/, $name;
 
     my $ref = $self->{config};
-    for( my $i = 0, $l = @path; $i < $l; $i++) {
+    for( my $i = 0, my $l = @path; $i < $l; $i++) {
         my $key = $path[$i];
         if (   !defined $ref->{$key}  # Not exists
             && $i < $l - 1) {        # Not the last one

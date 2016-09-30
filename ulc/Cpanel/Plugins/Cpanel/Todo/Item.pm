@@ -84,8 +84,6 @@ sub init {
             if (my $update_fn = $update->{$key}) {
                 &$update_fn($self, %opts);
             }
-
-            $changed = 1;
         }
     }
 }
