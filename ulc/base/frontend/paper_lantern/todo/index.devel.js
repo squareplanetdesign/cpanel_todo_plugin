@@ -14,6 +14,7 @@
   limitations under the License.
 */
 
+/* global require: false */
 
 // Loads the application with the non-combined files
 require(

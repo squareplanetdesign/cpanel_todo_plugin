@@ -14,6 +14,7 @@
   limitations under the License.
 */
 
+/* global require: false, define: false, PAGE: false */
 
 define(
     [
