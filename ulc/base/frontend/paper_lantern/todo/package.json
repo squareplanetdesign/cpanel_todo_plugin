@@ -1,0 +1,21 @@
+{
+  "name": "todo-plugin",
+  "version": "0.0.1",
+  "description": "Example plugin for cPanel Paper Lantern that uses CJT 2.0",
+  "keywords": [
+    "paper_lantern",
+    "cpanel",
+    "angular",
+    "todo",
+    "example cpanel plugin"
+  ],
+  "repository": "n/a",
+  "author": "cPanel, Inc.: Tom Green",
+  "license": "Apache 2.0",
+  "dependencies": {
+    "async": "~0.2.9",
+    "grunt": "~0.4.5",
+    "requirejs": "~2.1.14",
+    "underscore": "~1.6.0"
+  }
+}
