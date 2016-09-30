@@ -8,16 +8,6 @@
 #/usr/local/cpanel/3rdparty/perl/522/bin/cpan URL::Encode
 
 # Setup the whm application
-cd /usr/local/cpanel/whostmgr/docroot/templates/
-
-mkdir plugins
-cd plugins
-mkdir cpanel
-cd plugins
-
-ln -s /var/cpanel/plugins/cpanel/todo/ulc/whostmgr/docroot/templates/todo todo
-
-# Setup the whm application
 cd /usr/local/cpanel/base/frontend/paper_lantern/
 
 mkdir plugins
@@ -38,5 +28,6 @@ cd /usr/local/cpanel/Cpanel
 mkdir Plugins
 cd Plugins
 mkdir Cpanel
+cd Cpanel
 
 ln -s /var/cpanel/plugins/cpanel/todo/ulc/Cpanel/Plugins/Cpanel/Todo Todo
