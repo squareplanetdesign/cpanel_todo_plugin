@@ -1,0 +1,29 @@
+{
+  "name": "todo",
+  "version": "1.0.0",
+  "description": "Todo Example CJT 2.0 Application",
+  "main": "index.html",
+  "mainUrl": "paper_lantern/plugins/cpanel/todo/index.html",
+  "scripts": {
+    "test": "prove -vwml t/*.t",
+    "install": "install.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/squareplanetdesign/cpanel_todo_plugin.git"
+  },
+  "keywords": [
+    "cpanel",
+    "cjt 2.0",
+    "plugin",
+    "todo",
+    "example"
+  ],
+  "author": "Thomas Green",
+  "company": "cPanel, Inc.",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/squareplanetdesign/cpanel_todo_plugin/issues"
+  },
+  "homepage": "https://github.com/squareplanetdesign/cpanel_todo_plugin#readme"
+}
