@@ -31,11 +31,13 @@ cd Plugins/Cpanel
 
 ln -s $INSTALL/$PLUGIN/ulc/Cpanel/Plugins/Cpanel/Todo Todo
 
+# Install the language packs
+cd $ULC
+mkdir -p modules-install/$PLUGIN_NAME
+cd modules-install/$PLUGIN_NAME
+ln -s $INSTALL/$PLUGIN/locale/ locale
 
-cd /usr/local/cpanel/Cpanel
-mkdir Plugins
-cd Plugins
-mkdir Cpanel
-cd Cpanel
+cd $ULC
+bin/build_locale_databases
 
 cd $CWD
