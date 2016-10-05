@@ -20,10 +20,11 @@ define(
     [
         "angular",
         "lodash",
+        "cjt/util/locale",
         "cjt/services/alertService",
         "app/services/todoAPI"
     ],
-    function(angular, _) {
+    function(angular, _, LOCALE) {
 
         // Retrieve the current application
         var app = angular.module("App");
@@ -40,20 +41,24 @@ define(
                     todoAPI,
                     todoData
                 ) {
+                    $scope.getButtonTitle = function(todo) {
+                        return todo.edit ? LOCALE.maketext("Save") : LOCALE.maketext("Edit");
+                    };
+
                     var list = function() {
                         todoAPI.list().then(function(resp) {
                             todoData.todos = $scope.todos = resp.data;
                             if ($scope.todos && $scope.todos.length > 0) {
                                 alertService.add({
                                     type: "info",
-                                    message: "Loaded the data",
+                                    message: LOCALE.maketext("Loaded the data"),
                                     id: "loadedOk"
                                 });
                             }
                         }).catch(function(error) {
                             alertService.add({
                                 type: "danger",
-                                message: "Faild to load the data: " + error,
+                                message: LOCALE.maketext("Failed to load the data: [_1].", error),
                                 id: "loadFailed"
                             });
                         });
@@ -73,7 +78,7 @@ define(
                             $scope.todos.push(resp.data);
                             alertService.add({
                                 type: "info",
-                                message: "Added the new todo.",
+                                message: LOCALE.maketext("Added the new todo."),
                                 id: "addOk"
                             });
                             $scope.saving = false;
@@ -81,7 +86,7 @@ define(
                         }).catch(function(error) {
                             alertService.add({
                                 type: "danger",
-                                message: "Failed to add the new todo: " + error,
+                                message: LOCALE.maketext("Failed to add the new todo: [_1].", error),
                                 id: "addFailed"
                             });
                         });
@@ -95,7 +100,7 @@ define(
                         }).catch(function(error) {
                             alertService.add({
                                 type: "danger",
-                                message: "Failed to add the mark the todo: " + error,
+                                message: LOCALE.maketext("Failed to add the mark the todo: [_1].", error),
                                 id: "markFailed"
                             });
                         });
@@ -125,7 +130,7 @@ define(
                             }).catch(function(error) {
                                 alertService.add({
                                     type: "danger",
-                                    message: "Failed to update the todo: " + error,
+                                    message: LOCALE.maketext("Failed to update the todo: [_1]", error),
                                     id: "updateFailed"
                                 });
                             });
@@ -148,7 +153,7 @@ define(
                         }).catch(function(error) {
                             alertService.add({
                                 type: "danger",
-                                message: "Failed to remove the todo: " + error,
+                                message: LOCALE.maketext("Failed to remove the todo: [_1].", error),
                                 id: "removeFailed"
                             });
                         });

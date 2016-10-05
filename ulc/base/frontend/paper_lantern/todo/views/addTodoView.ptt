@@ -2,7 +2,7 @@
     <div class="form-group">
         <div class="row">
             <div class="col-xs-11">
-                <label>Subject:</label>
+                <label>[% locale.maketext('Subject:') %]</label>
             </div>
             <div class="col-xs-12">
                 <input type="text"
@@ -14,7 +14,7 @@
     <div class="form-group">
         <div class="row">
             <div class="col-xs-12">
-                <label>Description:</label>
+                <label>[% locale.maketext('Description:') %]</label>
             </div>
             <div class="col-xs-12">
                 <textarea ng-model="newtodo.description"
@@ -29,12 +29,12 @@
                 <button class="btn btn-primary"
                         ng-click="add(newtodo)"
                         ng-disabled="saving">
-                        Save
+                        [% locale.maketext('Save') %]
                 </button>
                 <button class="btn btn-link"
                         ng-click="loadView('todos')"
                         ng-disabled="saving">
-                        Cancel
+                        [% locale.maketext('Cancel') %]
                 </button>
             </div>
         </div>
