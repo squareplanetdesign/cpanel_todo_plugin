@@ -1,28 +1,36 @@
-# NOTE: This is not complete yet
-# TODO: Make it more robust
-# TODO: Add prerequsites.
 # TODO: Make this suitable for a real plugin.
+# NOTE: This is not yet setup to work with the plugin
+# installer, but could be easily adapted to that purpose.
 
 # Only needed to get the tests to perl run
 #/usr/local/cpanel/3rdparty/perl/522/bin/cpan Test::MockTime
 #/usr/local/cpanel/3rdparty/perl/522/bin/cpan URL::Encode
 
+CWD=$(pwd)
+ULC=/usr/local/cpanel
+INSTALL=/var/cpanel/plugins
+PLUGIN_NAME=todo
+PLUGIN=plugins/cpanel/$PLUGIN_NAME
+PAPER_LANTERN=$ULC/base/frontend/paper_lantern
+
 # Setup the whm application
-cd /usr/local/cpanel/base/frontend/paper_lantern/
+cd $PAPER_LANTERN
+mkdir -p plugins/cpanel
 
-mkdir plugins
-cd plugins
-mkdir cpanel
-cd plugins
-
-ln -s /var/cpanel/plugins/cpanel/todo/ulc/base/frontend/paper_lantern/todo todo
+ln -s $INSTALL/$PLUGIN/ulc/base/frontend/paper_lantern/todo todo
 
 # Setup the UAPI call
-cd /usr/local/cpanel/Cpanel/API/
+cd $ULC/Cpanel/API/
 
-ln -s /var/cpanel/plugins/cpanel/todo/ulc/Cpanel/API/Todo.pm Todo.pm
+ln -s $INSTALL/$PLUGIN/ulc/Cpanel/API/Todo.pm Todo.pm
 
 # Setup the Perl Modules
+cd $ULC/Cpanel
+mkdir -p Plugins/Cpanel
+cd Plugins/Cpanel
+
+ln -s $INSTALL/$PLUGIN/ulc/Cpanel/Plugins/Cpanel/Todo Todo
+
 
 cd /usr/local/cpanel/Cpanel
 mkdir Plugins
@@ -30,4 +38,4 @@ cd Plugins
 mkdir Cpanel
 cd Cpanel
 
-ln -s /var/cpanel/plugins/cpanel/todo/ulc/Cpanel/Plugins/Cpanel/Todo Todo
+cd $CWD
